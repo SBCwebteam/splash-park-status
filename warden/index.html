@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Coate Water Splash Park — Status Update</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /*
+     * Colour palette — all pairs verified WCAG 2.2 AA
+     *   text #111827 on white:          17.74:1
+     *   text #111827 on bg:             16.05:1
+     *   muted #4b5563 on white:          7.56:1
+     *   muted #4b5563 on bg:             6.84:1
+     *   accent #1a56cc on white:         6.47:1
+     *   accent #1a56cc on accent-light:  5.35:1
+     *   green #166534 on white:          7.13:1
+     *   green #166534 on green-bg:       6.81:1
+     *   red #b91c1c on white:            6.47:1
+     *   red #b91c1c on bg:               5.85:1
+     *   red #b91c1c on red-bg:           5.91:1
+     *   amber #78350f on amber-bg:       8.75:1
+     *   focus ring #1a56cc on white:     6.47:1
+     */
+    :root {
+      --bg:           #f0f4f8;
+      --surface:      #ffffff;
+      --border:       #dde3ec;
+      --border-deep:  #c3cdd9;
+      --text:         #111827;
+      --muted:        #4b5563;
+      --accent:       #1a56cc;
+      --accent-light: #e0eaff;
+      --green:        #166534;
+      --green-bg:     #f0fdf4;
+      --green-border: #86efac;
+      --red:          #b91c1c;
+      --red-bg:       #fef2f2;
+      --red-border:   #fca5a5;
+      --amber:        #78350f;
+      --amber-bg:     #fffbeb;
+      --amber-border: #fcd34d;
+      --shadow:       0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+      --radius:       14px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', -apple-system, system-ui, sans-serif;
+      font-size: 1rem;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 16px 56px;
+    }
+
+    /*
+     * WCAG 2.2 — 2.4.11 Focus Appearance
+     * 3px outline, offset 2px (outside component boundary).
+     * #1a56cc on white = 6.47:1, exceeds 3:1 minimum.
+     */
+    :focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    :focus:not(:focus-visible) { outline: none; }
+
+    .wrap {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* ── HEADER ─────────────────────────────────── */
+    .header { text-align: center; padding: 4px 0 8px; }
+
+    .header-tag {
+      display: inline-block;
+      background: var(--accent-light);
+      border: 1px solid #b6ccf5;
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+
+    .header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .header p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* ── CARDS ──────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    /* ── LOCKOUT ────────────────────────────────── */
+    #lockout-wrap { display: none; }
+
+    .lockout-card {
+      background: var(--amber-bg);
+      border: 1px solid var(--amber-border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .lockout-heading {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--amber);
+      margin-bottom: 8px;
+    }
+
+    .lockout-body {
+      font-size: 1rem;
+      color: var(--amber);
+      line-height: 1.6;
+    }
+
+    #lockout-countdown {
+      font-weight: 700;
+      font-size: 1.25rem;
+      display: block;
+      margin-top: 10px;
+    }
+
+    /* ── PIN DOTS ───────────────────────────────── */
+    .pin-dots {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .pin-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--border-deep);
+      transition: background 0.12s, border-color 0.12s, transform 0.12s;
+    }
+
+    .pin-dot.filled { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
+
+    .pin-dot.error {
+      background: var(--red);
+      border-color: var(--red);
+      animation: shake 0.32s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25%       { transform: translateX(-5px); }
+      75%       { transform: translateX(5px); }
+    }
+
+    /* ── KEYPAD ─────────────────────────────────── */
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    /*
+     * WCAG 2.2 — 2.5.8 Target Size Minimum (24x24px)
+     * min-height: 60px satisfies this at all viewport sizes.
+     */
+    .key {
+      min-height: 60px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: var(--surface);
+      color: var(--text);
+      font-family: 'Outfit', system-ui, sans-serif;
+      font-size: 1.25rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+      transition: background 0.1s, transform 0.08s;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    .key:hover  { background: var(--bg); }
+    .key:active { background: var(--border); box-shadow: none; transform: scale(0.93); }
+    .key.action { font-size: 1rem; font-weight: 600; color: var(--muted); }
+
+    .pin-feedback {
+      font-size: 1rem;
+      font-weight: 500;
+      min-height: 24px;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    .pin-feedback.error { color: var(--red); }
+
+    .attempt-notice {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #92400e;
+      min-height: 24px;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    /* ── CURRENT STATUS ─────────────────────────── */
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 10px;
+    }
+
+    .status-row.loading-state {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      font-size: 1rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .status-row.open   { background: var(--green-bg); border: 1px solid var(--green-border); }
+    .status-row.closed { background: var(--red-bg);   border: 1px solid var(--red-border);   }
+
+    .status-indicator {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .open   .status-indicator { background: var(--green); }
+    .closed .status-indicator { background: var(--red); }
+
+    .open .status-indicator::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: var(--green);
+      opacity: 0.25;
+      animation: ripple 2.2s ease-out infinite;
+    }
+
+    @keyframes ripple {
+      0%   { transform: scale(1); opacity: 0.25; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+
+    .status-text-label { font-size: 1rem; font-weight: 700; }
+    .open   .status-text-label { color: var(--green); }
+    .closed .status-text-label { color: var(--red); }
+    .status-text-sub { font-size: 0.9rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── TOGGLE BUTTONS ─────────────────────────── */
+    .toggle-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .toggle-btn {
+      min-height: 64px;
+      border-radius: 11px;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
+      font-family: 'Outfit', system-ui, sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 8px;
+      transition: border-color 0.14s, background 0.14s, color 0.14s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .toggle-btn.open-btn.selected   { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+    .toggle-btn.closed-btn.selected { border-color: var(--red);   background: var(--red-bg);   color: var(--red);   }
+
+    /* ── REASON DROPDOWN ────────────────────────── */
+    .reason-card         { display: none; }
+    .reason-card.visible { display: block; }
+
+    .field-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 9px;
+      display: block;
+    }
+
+    select {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 38px 12px 14px;
+      background: var(--bg);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%234b5563' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      border: 2px solid var(--border-deep);
+      border-radius: 9px;
+      color: var(--text);
+      font-family: 'Outfit', system-ui, sans-serif;
+      font-size: 1rem;
+      appearance: none;
+      -webkit-appearance: none;
+      transition: border-color 0.12s, box-shadow 0.12s;
+    }
+
+    select:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+      border-color: var(--accent);
+    }
+
+    /* ── SUBMIT BUTTON ──────────────────────────── */
+    .submit-btn {
+      width: 100%;
+      min-height: 48px;
+      padding: 14px 16px;
+      border-radius: 11px;
+      border: none;
+      font-family: 'Outfit', system-ui, sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.12s, transform 0.08s, box-shadow 0.12s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    /* muted #4b5563 on border #dde3ec = 4.91:1 — PASS */
+    .submit-btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+    /* white on green #166534 = 7.13:1 — PASS */
+    .submit-btn.open-submit   { background: var(--green); color: #fff; box-shadow: 0 2px 8px rgba(22,101,52,0.25); }
+
+    /* white on red #b91c1c = 6.47:1 — PASS */
+    .submit-btn.closed-submit { background: var(--red);   color: #fff; box-shadow: 0 2px 8px rgba(185,28,28,0.25); }
+
+    .submit-btn:not(:disabled):active { transform: scale(0.97); box-shadow: none; }
+
+    .error-text {
+      font-size: 1rem;
+      color: var(--red);
+      text-align: center;
+      min-height: 24px;
+    }
+
+    /* ── SUCCESS SCREEN ─────────────────────────── */
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin: 0 auto 18px;
+    }
+
+    /* green #166534 on green-bg = 6.81:1 — PASS */
+    .success-icon.open   { background: var(--green-bg); border: 2px solid var(--green-border); color: var(--green); }
+
+    /* red #b91c1c on red-bg = 5.91:1 — PASS */
+    .success-icon.closed { background: var(--red-bg);   border: 2px solid var(--red-border);   color: var(--red); }
+
+    .success-card { text-align: center; }
+    .success-card h2 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 10px; }
+    .success-card p  { font-size: 1rem; color: var(--muted); line-height: 1.6; white-space: pre-line; }
+
+    /* ── BACK BUTTON ────────────────────────────── */
+    .back-btn {
+      width: 100%;
+      min-height: 48px;
+      padding: 13px 16px;
+      border-radius: 11px;
+      border: 2px solid var(--border-deep);
+      background: var(--surface);
+      color: var(--text);
+      font-family: 'Outfit', system-ui, sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: background 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .back-btn:hover  { background: var(--bg); }
+    .back-btn:active { background: var(--border); }
+
+    /* ── TOAST ──────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1e293b;
+      color: #f8fafc;
+      font-family: 'Outfit', system-ui, sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 12px 20px;
+      border-radius: 9px;
+      opacity: 0;
+      transition: transform 0.28s ease, opacity 0.28s ease;
+      z-index: 200;
+      pointer-events: none;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+      max-width: calc(100vw - 32px);
+      text-align: center;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* ── FOOTER ─────────────────────────────────── */
+    .footer { text-align: center; font-size: 0.8rem; color: var(--muted); padding: 2px 0; }
+
+    /* ── SCREENS ────────────────────────────────── */
+    .screen        { display: none; }
+    .screen.active { display: contents; }
+
+    @media (max-width: 360px) {
+      body { padding: 16px 12px 48px; }
+      .keypad { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="header-tag">Park Warden Portal</div>
+    <h1>Coate Water Splash Park</h1>
+    <p>Status update &mdash; Swindon Borough Council</p>
+  </div>
+
+  <!-- ── SCREEN 1: PIN ────────────────────────────────────────────── -->
+  <div class="screen active" id="screen-pin">
+
+    <div id="lockout-wrap">
+      <div class="lockout-card" role="alert">
+        <p class="lockout-heading">Access locked</p>
+        <p class="lockout-body">
+          Too many incorrect attempts. Please wait before trying again.
+          <span id="lockout-countdown" aria-live="polite"></span>
+        </p>
+      </div>
+    </div>
+
+    <div class="card" id="pin-card">
+      <div class="card-label" id="pin-card-label">Enter PIN to continue</div>
+      <div class="pin-dots" aria-hidden="true">
+        <div class="pin-dot" id="dot-0"></div>
+        <div class="pin-dot" id="dot-1"></div>
+        <div class="pin-dot" id="dot-2"></div>
+        <div class="pin-dot" id="dot-3"></div>
+      </div>
+      <div class="pin-feedback"
+           id="pin-feedback"
+           role="status"
+           aria-live="assertive"
+           aria-atomic="true"></div>
+      <div class="keypad" role="group" aria-labelledby="pin-card-label">
+        <button class="key" onclick="pinInput('1')" aria-label="1">1</button>
+        <button class="key" onclick="pinInput('2')" aria-label="2">2</button>
+        <button class="key" onclick="pinInput('3')" aria-label="3">3</button>
+        <button class="key" onclick="pinInput('4')" aria-label="4">4</button>
+        <button class="key" onclick="pinInput('5')" aria-label="5">5</button>
+        <button class="key" onclick="pinInput('6')" aria-label="6">6</button>
+        <button class="key" onclick="pinInput('7')" aria-label="7">7</button>
+        <button class="key" onclick="pinInput('8')" aria-label="8">8</button>
+        <button class="key" onclick="pinInput('9')" aria-label="9">9</button>
+        <button class="key action" onclick="pinClear()" aria-label="Clear all digits">Clear</button>
+        <button class="key" onclick="pinInput('0')" aria-label="0">0</button>
+        <button class="key action" onclick="pinDelete()" aria-label="Delete last digit">Del</button>
+      </div>
+      <div class="attempt-notice"
+           id="attempt-notice"
+           aria-live="polite"
+           aria-atomic="true"></div>
+    </div>
+
+  </div>
+
+  <!-- ── SCREEN 2: STATUS UPDATE ──────────────────────────────────── -->
+  <div class="screen" id="screen-status">
+
+    <div class="card">
+      <div class="card-label">Current status</div>
+      <div id="current-status-el"
+           class="status-row loading-state"
+           aria-live="polite"
+           aria-atomic="true">Loading&hellip;</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label" id="toggle-label">Set new status</div>
+      <div class="toggle-row" role="group" aria-labelledby="toggle-label">
+        <button class="toggle-btn open-btn"
+                id="btn-open"
+                onclick="selectStatus('open')"
+                aria-pressed="false">Open</button>
+        <button class="toggle-btn closed-btn"
+                id="btn-closed"
+                onclick="selectStatus('closed')"
+                aria-pressed="false">Closed</button>
+      </div>
+    </div>
+
+    <div class="card reason-card" id="reason-card">
+      <label class="field-label" for="reason-select">Reason for closure</label>
+      <select id="reason-select" aria-required="true">
+        <option value="">Select a reason&hellip;</option>
+        <option value="Water quality testing">Water quality testing</option>
+        <option value="Fouling in or near the water">Fouling in or near the water</option>
+        <option value="Mechanical or equipment issue">Mechanical or equipment issue</option>
+        <option value="Damage to equipment">Damage to equipment</option>
+        <option value="Cleaning or essential maintenance">Cleaning or essential maintenance</option>
+        <option value="High visitor numbers">High visitor numbers</option>
+        <option value="Severe weather">Severe weather</option>
+        <option value="Safety concern identified by park wardens">Safety concern identified by park wardens</option>
+      </select>
+    </div>
+
+    <div class="error-text"
+         id="submit-error"
+         aria-live="polite"
+         aria-atomic="true"
+         role="alert"></div>
+
+    <button class="submit-btn"
+            id="submit-btn"
+            disabled
+            onclick="submitStatus()"
+            aria-disabled="true">Select a status above</button>
+
+  </div>
+
+  <!-- ── SCREEN 3: SUCCESS ─────────────────────────────────────────── -->
+  <div class="screen" id="screen-success">
+    <div class="card success-card" role="status" aria-live="polite" aria-atomic="true">
+      <div class="success-icon" id="success-icon" aria-hidden="true"></div>
+      <h2 id="success-heading"></h2>
+      <p id="success-body"></p>
+    </div>
+    <button class="back-btn" onclick="goBack()">Update again</button>
+  </div>
+
+  <div class="footer">Swindon Borough Council &middot; Coate Water Country Park</div>
+
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+// ════════════════════════════════════════════════════════════════════
+//  CONFIGURATION
+//  Replace YOUR_WORKER_URL with your Cloudflare Worker URL
+//  once deployed (Step 9 of the setup instructions).
+//  No token is stored here — the worker holds it securely.
+// ════════════════════════════════════════════════════════════════════
+var CONFIG = {
+  pin_hash:   'f64ee82a9f4a0451528059f6302d3ec67c5a3d3616392a86bf88df4bb451a3b3',
+  worker_url: 'https://splash-park-status.sbcictweb.workers.dev'
+  // e.g. 'https://splash-park-status.yoursubdomain.workers.dev'
+};
+
+// ════════════════════════════════════════════════════════════════════
+//  SECURITY SETTINGS
+// ════════════════════════════════════════════════════════════════════
+var SECURITY = {
+  max_attempts:         5,
+  lockout_minutes:      30,
+  session_timeout_mins: 20,
+  allowed_reasons: [
+    'Water quality testing',
+    'Fouling in or near the water',
+    'Mechanical or equipment issue',
+    'Damage to equipment',
+    'Cleaning or essential maintenance',
+    'High visitor numbers',
+    'Severe weather',
+    'Safety concern identified by park wardens'
+  ]
+};
+
+// ════════════════════════════════════════════════════════════════════
+//  INTERNAL — do not edit below this line
+// ════════════════════════════════════════════════════════════════════
+var LS_ATTEMPTS = 'sp_warden_attempts';
+var LS_LOCKOUT  = 'sp_warden_lockout';
+
+var pinValue        = '';
+var isAuthenticated = false;
+var lastActivity    = Date.now();
+var selectedStatus  = null;
+var sessionTimer    = null;
+var lockoutTimer    = null;
+var toastTimer      = null;
+
+// ── LOCKOUT ───────────────────────────────────────────────────────
+function getAttempts()     { return parseInt(localStorage.getItem(LS_ATTEMPTS) || '0', 10); }
+function setAttempts(n)    { localStorage.setItem(LS_ATTEMPTS, String(n)); }
+function getLockoutUntil() { return parseInt(localStorage.getItem(LS_LOCKOUT)  || '0', 10); }
+function isLockedOut()     { return Date.now() < getLockoutUntil(); }
+
+function triggerLockout() {
+  localStorage.setItem(LS_LOCKOUT, String(Date.now() + SECURITY.lockout_minutes * 60000));
+  setAttempts(0);
+}
+
+function clearLockout() {
+  localStorage.removeItem(LS_ATTEMPTS);
+  localStorage.removeItem(LS_LOCKOUT);
+}
+
+function checkAndShowLockout() {
+  if (!isLockedOut()) return false;
+  document.getElementById('pin-card').style.display    = 'none';
+  document.getElementById('lockout-wrap').style.display = 'block';
+  startLockoutCountdown();
+  return true;
+}
+
+function startLockoutCountdown() {
+  clearInterval(lockoutTimer);
+  lockoutTimer = setInterval(function () {
+    var remaining = getLockoutUntil() - Date.now();
+    if (remaining <= 0) {
+      clearInterval(lockoutTimer);
+      clearLockout();
+      document.getElementById('lockout-wrap').style.display  = 'none';
+      document.getElementById('pin-card').style.display      = 'block';
+      document.getElementById('lockout-countdown').textContent = '';
+      return;
+    }
+    var m = Math.floor(remaining / 60000);
+    var s = Math.floor((remaining % 60000) / 1000);
+    document.getElementById('lockout-countdown').textContent =
+      m + ':' + String(s).padStart(2, '0') + ' remaining';
+  }, 1000);
+}
+
+// ── PIN HASHING (SHA-256 via Web Crypto API) ──────────────────────
+async function hashPin(pin) {
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
+  return Array.from(new Uint8Array(buf))
+    .map(function (b) { return b.toString(16).padStart(2, '0'); })
+    .join('');
+}
+
+// ── PIN INPUT ─────────────────────────────────────────────────────
+function pinInput(digit) {
+  if (isLockedOut() || pinValue.length >= 4) return;
+  pinValue += digit;
+  updateDots();
+  if (pinValue.length === 4) setTimeout(checkPin, 100);
+}
+
+function pinDelete() {
+  if (isLockedOut()) return;
+  pinValue = pinValue.slice(0, -1);
+  updateDots();
+  clearPinFeedback();
+}
+
+function pinClear() {
+  if (isLockedOut()) return;
+  pinValue = '';
+  updateDots();
+  clearPinFeedback();
+}
+
+function clearPinFeedback() {
+  var f = document.getElementById('pin-feedback');
+  f.textContent = '';
+  f.className   = 'pin-feedback';
+}
+
+function updateDots(state) {
+  for (var i = 0; i < 4; i++) {
+    var d = document.getElementById('dot-' + i);
+    d.className = 'pin-dot';
+    if (state === 'error')          d.classList.add('error');
+    else if (i < pinValue.length)   d.classList.add('filled');
+  }
+}
+
+async function checkPin() {
+  var hash = await hashPin(pinValue);
+
+  if (hash === CONFIG.pin_hash) {
+    clearLockout();
+    isAuthenticated = true;
+    document.getElementById('attempt-notice').textContent = '';
+    clearPinFeedback();
+    showScreen('screen-status');
+    loadCurrentStatus();
+    startSessionTimer();
+  } else {
+    var attempts  = getAttempts() + 1;
+    var remaining = SECURITY.max_attempts - attempts;
+    setAttempts(attempts);
+    updateDots('error');
+
+    if (attempts >= SECURITY.max_attempts) {
+      triggerLockout();
+      setTimeout(function () {
+        pinValue = '';
+        updateDots();
+        clearPinFeedback();
+        document.getElementById('attempt-notice').textContent = '';
+        checkAndShowLockout();
+      }, 900);
+    } else {
+      var fb = document.getElementById('pin-feedback');
+      fb.textContent = 'Incorrect PIN \u2014 try again.';
+      fb.className   = 'pin-feedback error';
+      document.getElementById('attempt-notice').textContent = remaining === 1
+        ? 'Warning: 1 attempt remaining before lockout'
+        : remaining + ' attempts remaining';
+      setTimeout(function () {
+        pinValue = '';
+        updateDots();
+        clearPinFeedback();
+      }, 1500);
+    }
+  }
+}
+
+// ── SESSION TIMEOUT ───────────────────────────────────────────────
+function startSessionTimer() {
+  lastActivity = Date.now();
+  clearInterval(sessionTimer);
+  sessionTimer = setInterval(function () {
+    if (!isAuthenticated) return;
+    if ((Date.now() - lastActivity) >= SECURITY.session_timeout_mins * 60000) {
+      sessionExpired();
+    }
+  }, 30000);
+}
+
+function resetActivity() { lastActivity = Date.now(); }
+
+function sessionExpired() {
+  isAuthenticated = false;
+  clearInterval(sessionTimer);
+  pinValue = '';
+  selectedStatus = null;
+  updateDots();
+  clearPinFeedback();
+  document.getElementById('attempt-notice').textContent = '';
+  showScreen('screen-pin');
+  showToast('Session expired \u2014 please re-enter your PIN.');
+}
+
+['click', 'touchstart', 'keydown'].forEach(function (evt) {
+  document.getElementById('screen-status')
+    .addEventListener(evt, resetActivity, { passive: true });
+});
+
+// ── SCREENS ───────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(function (s) {
+    s.classList.remove('active');
+  });
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── XSS PROTECTION ───────────────────────────────────────────────
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+}
+
+// ── LOAD CURRENT STATUS (via Cloudflare Worker) ───────────────────
+async function loadCurrentStatus() {
+  var el = document.getElementById('current-status-el');
+  el.className   = 'status-row loading-state';
+  el.textContent = 'Loading\u2026';
+  try {
+    var r = await fetch(CONFIG.worker_url, { cache: 'no-store' });
+    if (!r.ok) throw new Error('Worker error: ' + r.status);
+    var status = await r.json();
+    if (typeof status.isOpen !== 'boolean') throw new Error('Unexpected data');
+    renderCurrentStatus(status);
+  } catch (err) {
+    el.className   = 'status-row loading-state';
+    el.textContent = 'Could not load current status.';
+  }
+}
+
+function renderCurrentStatus(status) {
+  var el         = document.getElementById('current-status-el');
+  var cls        = status.isOpen ? 'open' : 'closed';
+  var safeLabel  = status.isOpen ? 'Open' : 'Closed';
+  var safeReason = status.reason ? escapeHtml(String(status.reason)) : '';
+  el.className = 'status-row ' + cls;
+  el.innerHTML =
+    '<div class="status-indicator" aria-hidden="true"></div>' +
+    '<div>' +
+      '<div class="status-text-label">' + safeLabel + '</div>' +
+      (safeReason ? '<div class="status-text-sub">' + safeReason + '</div>' : '') +
+    '</div>';
+}
+
+// ── STATUS SELECTION ──────────────────────────────────────────────
+function selectStatus(status) {
+  resetActivity();
+  selectedStatus = status;
+  var btnOpen   = document.getElementById('btn-open');
+  var btnClosed = document.getElementById('btn-closed');
+  btnOpen.classList.toggle('selected',   status === 'open');
+  btnClosed.classList.toggle('selected', status === 'closed');
+  btnOpen.setAttribute('aria-pressed',   status === 'open'   ? 'true' : 'false');
+  btnClosed.setAttribute('aria-pressed', status === 'closed' ? 'true' : 'false');
+  var reasonCard = document.getElementById('reason-card');
+  if (status === 'closed') {
+    reasonCard.classList.add('visible');
+    document.getElementById('reason-select').value = '';
+  } else {
+    reasonCard.classList.remove('visible');
+  }
+  updateSubmitBtn();
+}
+
+function updateSubmitBtn() {
+  var btn    = document.getElementById('submit-btn');
+  var reason = document.getElementById('reason-select').value;
+  var disabled = true;
+  var label    = 'Select a status above';
+  var cls      = 'submit-btn';
+
+  if (selectedStatus) {
+    if (selectedStatus === 'closed' && !reason) {
+      label = 'Select a reason above';
+    } else {
+      disabled = false;
+      cls      = 'submit-btn ' + selectedStatus + '-submit';
+      label    = selectedStatus === 'open'
+        ? 'Confirm \u2014 set to Open'
+        : 'Confirm \u2014 set to Closed';
+    }
+  }
+
+  btn.disabled = disabled;
+  btn.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+  btn.className   = cls;
+  btn.textContent = label;
+}
+
+document.getElementById('reason-select').addEventListener('change', function () {
+  resetActivity();
+  updateSubmitBtn();
+});
+
+// ── SUBMIT (via Cloudflare Worker) ────────────────────────────────
+async function submitStatus() {
+  if (!isAuthenticated) { showScreen('screen-pin'); return; }
+
+  resetActivity();
+
+  var btn     = document.getElementById('submit-btn');
+  var errorEl = document.getElementById('submit-error');
+  var isOpen  = selectedStatus === 'open';
+  var reason  = isOpen ? '' : document.getElementById('reason-select').value;
+
+  // Client-side whitelist check (worker also validates server-side)
+  if (!isOpen && SECURITY.allowed_reasons.indexOf(reason) === -1) {
+    errorEl.textContent = 'Invalid reason. Please select from the list.';
+    return;
+  }
+
+  btn.disabled    = true;
+  btn.textContent = 'Updating\u2026';
+  errorEl.textContent = '';
+
+  try {
+    var resp = await fetch(CONFIG.worker_url, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ isOpen: isOpen, reason: reason })
+    });
+
+    if (!resp.ok) throw new Error('Worker error: ' + resp.status);
+
+    var icon = document.getElementById('success-icon');
+    icon.className   = 'success-icon ' + selectedStatus;
+    icon.textContent = isOpen ? '\u2713' : '\u2715';
+    document.getElementById('success-heading').textContent = isOpen
+      ? 'Splash park is now Open'
+      : 'Splash park is now Closed';
+    document.getElementById('success-body').textContent = isOpen
+      ? 'The website will now show the splash park as open and operating normally.'
+      : 'The website will show the splash park as closed.\n\nReason shown to residents: ' + reason;
+    showScreen('screen-success');
+
+  } catch (err) {
+    btn.disabled    = false;
+    btn.className   = 'submit-btn ' + selectedStatus + '-submit';
+    btn.textContent = 'Confirm \u2014 set to ' + (isOpen ? 'Open' : 'Closed');
+    errorEl.textContent = 'Update failed. Check your connection and try again.';
+  }
+}
+
+// ── BACK / RESET ──────────────────────────────────────────────────
+function goBack() {
+  resetActivity();
+  selectedStatus = null;
+  ['btn-open', 'btn-closed'].forEach(function (id) {
+    document.getElementById(id).classList.remove('selected');
+    document.getElementById(id).setAttribute('aria-pressed', 'false');
+  });
+  document.getElementById('reason-card').classList.remove('visible');
+  document.getElementById('reason-select').value = '';
+  document.getElementById('submit-error').textContent = '';
+  updateSubmitBtn();
+  showScreen('screen-status');
+  loadCurrentStatus();
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.classList.remove('show'); }, 5000);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+(function init() {
+  checkAndShowLockout();
+  if (CONFIG.worker_url === 'YOUR_WORKER_URL') {
+    console.warn('[SBC Splash Park] Cloudflare Worker URL not yet configured. See setup instructions.');
+  }
+}());
+</script>
+</body>
+</html>
