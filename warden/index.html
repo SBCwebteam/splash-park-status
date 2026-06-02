@@ -919,7 +919,7 @@ function renderSeasonStatus(seasonOpen) {
   sd.className = 'season-status-row ' + (seasonOpen ? 's-open' : 's-closed');
   sd.innerHTML =
     '<div class="season-dot" aria-hidden="true"></div>' +
-    '<div class="season-status-label">' + (seasonOpen ? 'Open for season' : 'Closed for winter season') + '</div>';
+    '<div class="season-status-label">' + (seasonOpen ? 'Open for summer season' : 'Closed for winter season') + '</div>';
 
   var controls = document.getElementById('season-controls');
   controls.style.display = 'block';
