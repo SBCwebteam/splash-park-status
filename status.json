@@ -1,5 +1,5 @@
 {
-  "isOpen": false,
-  "reason": "Contamination detected — cleaning is underway",
+  "isOpen": true,
+  "reason": "",
   "seasonOpen": true
 }
