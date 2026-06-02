@@ -1,5 +1,5 @@
 {
-  "isOpen": false,
-  "reason": "Severe weather",
+  "isOpen": true,
+  "reason": "",
   "seasonOpen": true
 }
