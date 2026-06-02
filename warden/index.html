@@ -1030,7 +1030,7 @@ function renderSeasonStatus(seasonOpen) {
   controls.style.display = 'block';
   controls.innerHTML = seasonOpen
     ? '<button class="season-change-btn" onclick="initSeasonChange(false)">Close Splash Park for winter season</button>'
-    : '<button class="season-change-btn" onclick="initSeasonChange(true)">Open Splash Park for season</button>';
+    : '<button class="season-change-btn" onclick="initSeasonChange(true)">Open Splash Park for summer season</button>';
 }
 
 function initSeasonChange(value) {
@@ -1041,10 +1041,10 @@ function initSeasonChange(value) {
   document.getElementById('season-controls').style.display = 'none';
 
   var warningText = value
-    ? 'You are about to open the Splash Park for the season. The website will show the daily open and closed status to residents. Only confirm if you have been asked to do this by your line manager.'
+    ? 'You are about to open the Splash Park for the summer season. The website will show the daily open and closed status to residents. Only confirm if you have been asked to do this by your line manager.'
     : 'You are about to close the Splash Park for the winter season. The website will show the park as closed for the season. Residents will not see daily status updates until the season is reopened. Only confirm if you have been asked to do this by your line manager.';
 
-  var confirmLabel = value ? 'Confirm - open for season' : 'Confirm - close for winter';
+  var confirmLabel = value ? 'Confirm - open for summer season' : 'Confirm - close for winter season';
 
   var sec = document.getElementById('season-confirm-section');
   sec.style.display = 'block';
@@ -1098,7 +1098,7 @@ async function confirmSeasonChange() {
       : 'Splash Park closed for winter season';
     document.getElementById('success-body').textContent = pendingSeasonValue
       ? 'The website will now show daily open and closed status to residents.'
-      : 'The website will now show the Splash Park as closed for the season.';
+      : 'The website will now show the Splash Park as closed for the winter season.';
 
     pendingSeasonValue = null;
     showScreen('screen-success');
@@ -1106,7 +1106,7 @@ async function confirmSeasonChange() {
   } catch (err) {
     if (confirmBtn) {
       confirmBtn.disabled    = false;
-      confirmBtn.textContent = pendingSeasonValue ? 'Confirm - open for season' : 'Confirm - close for winter';
+      confirmBtn.textContent = pendingSeasonValue ? 'Confirm - open for summer season' : 'Confirm - close for winter season';
     }
     errorEl.textContent = 'Update failed. Check your connection and try again.';
   }
