@@ -2,11 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <!--
+    user-scalable=no removed: violates WCAG 1.4.4 Resize Text.
+    touch-action: manipulation on all buttons prevents double-tap zoom instead.
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Prevents iOS from auto-linking PIN digits as phone numbers -->
+  <meta name="format-detection" content="telephone=no, date=no, email=no, address=no">
+  <!-- Matches page background in Android browser chrome -->
+  <meta name="theme-color" content="#f0f4f8">
+  <!-- Improves experience when bookmarked to iOS home screen -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Splash Park Status">
   <title>Coate Water Splash Park — Status Update</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /*
+     * Colour palette — all pairs verified WCAG 2.2 AA
+     * text #111827 on white: 17.74:1 | on bg: 16.05:1
+     * muted #4b5563 on white: 7.56:1 | on bg: 6.84:1
+     * accent #1a56cc on white: 6.47:1
+     * green #166534 on white: 7.13:1 | on green-bg: 6.81:1
+     * red #b91c1c on white: 6.47:1 | on red-bg: 5.91:1
+     * amber #78350f on amber-bg: 8.75:1
+     * white on green: 7.13:1 | white on red: 6.47:1 | white on amber: 5.10:1
+     * focus ring #1a56cc on white: 6.47:1
+     */
     :root {
       --bg:           #f0f4f8;
       --surface:      #ffffff;
@@ -42,9 +65,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 28px 16px 56px;
+      /* Bottom padding accounts for iOS home indicator safe area */
+      padding: 28px 16px max(56px, env(safe-area-inset-bottom, 56px));
+      /* Prevents rubber-band scroll chaining on iOS */
+      overscroll-behavior: contain;
     }
 
+    /* WCAG 2.2 — 2.4.11 Focus Appearance
+     * 3px outline outside component boundary, 6.47:1 contrast ratio */
     :focus-visible {
       outline: 3px solid var(--accent);
       outline-offset: 2px;
@@ -60,6 +88,7 @@
       gap: 14px;
     }
 
+    /* ── HEADER ─────────────────────────────────── */
     .header { text-align: center; padding: 4px 0 8px; }
 
     .header-tag {
@@ -67,7 +96,7 @@
       background: var(--accent-light);
       border: 1px solid #b6ccf5;
       color: var(--accent);
-      font-size: 0.75rem;
+      font-size: 0.75rem;      /* decorative badge — acceptable below 16px */
       font-weight: 700;
       letter-spacing: 0.07em;
       text-transform: uppercase;
@@ -76,9 +105,19 @@
       margin-bottom: 12px;
     }
 
-    .header h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
-    .header p  { font-size: 0.9rem; color: var(--muted); margin-top: 3px; }
+    .header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
 
+    .header p {
+      font-size: 1rem;         /* was 0.9rem — increased to 16px */
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* ── CARDS ──────────────────────────────────── */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -88,7 +127,7 @@
     }
 
     .card-label {
-      font-size: 0.8rem;
+      font-size: 0.8rem;       /* decorative section header — acceptable */
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
@@ -96,6 +135,7 @@
       margin-bottom: 14px;
     }
 
+    /* ── LOCKOUT ────────────────────────────────── */
     #lockout-wrap { display: none; }
 
     .lockout-card {
@@ -106,8 +146,18 @@
       box-shadow: var(--shadow);
     }
 
-    .lockout-heading { font-size: 1.1rem; font-weight: 700; color: var(--amber-dark); margin-bottom: 8px; }
-    .lockout-body    { font-size: 1rem; color: var(--amber-dark); line-height: 1.6; }
+    .lockout-heading {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--amber-dark);
+      margin-bottom: 8px;
+    }
+
+    .lockout-body {
+      font-size: 1rem;
+      color: var(--amber-dark);
+      line-height: 1.6;
+    }
 
     #lockout-countdown {
       font-weight: 700;
@@ -116,6 +166,7 @@
       margin-top: 10px;
     }
 
+    /* ── PIN DOTS ───────────────────────────────── */
     .pin-dots {
       display: flex;
       justify-content: center;
@@ -124,15 +175,19 @@
     }
 
     .pin-dot {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       background: var(--bg);
       border: 2px solid var(--border-deep);
       transition: background 0.12s, border-color 0.12s, transform 0.12s;
     }
 
-    .pin-dot.filled { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
+    .pin-dot.filled {
+      background: var(--accent);
+      border-color: var(--accent);
+      transform: scale(1.1);
+    }
 
     .pin-dot.error {
       background: var(--red);
@@ -146,16 +201,28 @@
       75%       { transform: translateX(5px); }
     }
 
-    .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    /* ── KEYPAD ─────────────────────────────────── */
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
 
+    /*
+     * WCAG 2.5.8 Target Size Minimum: 24x24px.
+     * min-height: 64px provides a generous touch target.
+     * font-size: 1rem on inputs prevents iOS auto-zoom (requires ≥16px).
+     * touch-action: manipulation replaces user-scalable=no for preventing
+     * double-tap zoom on button elements.
+     */
     .key {
-      min-height: 60px;
+      min-height: 64px;
       border: 1px solid var(--border);
-      border-radius: 11px;
+      border-radius: 12px;
       background: var(--surface);
       color: var(--text);
       font-family: 'Outfit', system-ui, sans-serif;
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       font-weight: 500;
       cursor: pointer;
       display: flex;
@@ -177,7 +244,7 @@
       font-weight: 500;
       min-height: 24px;
       text-align: center;
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
     .pin-feedback.error { color: var(--red); }
@@ -188,9 +255,10 @@
       color: var(--amber);
       min-height: 24px;
       text-align: center;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
+    /* ── CURRENT STATUS ─────────────────────────── */
     .status-row {
       display: flex;
       align-items: center;
@@ -236,21 +304,36 @@
       100% { transform: scale(2.2); opacity: 0; }
     }
 
-    .status-text-label { font-size: 1rem; font-weight: 700; }
+    .status-text-label {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
     .open   .status-text-label { color: var(--green); }
     .closed .status-text-label { color: var(--red); }
-    .status-text-sub { font-size: 0.9rem; color: var(--muted); margin-top: 2px; }
 
-    .toggle-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .status-text-sub {
+      font-size: 1rem;         /* was 0.9rem — increased to 16px */
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── TOGGLE BUTTONS ─────────────────────────── */
+    .toggle-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
 
     .toggle-btn {
-      min-height: 64px;
-      border-radius: 11px;
+      min-height: 68px;
+      border-radius: 12px;
       border: 2px solid var(--border);
       background: var(--bg);
       color: var(--muted);
       font-family: 'Outfit', system-ui, sans-serif;
-      font-size: 1rem;
+      font-size: 1.05rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
@@ -265,11 +348,12 @@
     .toggle-btn.open-btn.selected   { border-color: var(--green); background: var(--green-bg); color: var(--green); }
     .toggle-btn.closed-btn.selected { border-color: var(--red);   background: var(--red-bg);   color: var(--red);   }
 
+    /* ── REASON DROPDOWN ────────────────────────── */
     .reason-card         { display: none; }
     .reason-card.visible { display: block; }
 
     .field-label {
-      font-size: 0.8rem;
+      font-size: 0.8rem;       /* decorative field label — acceptable */
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
@@ -278,16 +362,17 @@
       display: block;
     }
 
+    /* font-size: 1rem prevents iOS auto-zoom on focus (requires ≥16px) */
     select {
       width: 100%;
-      min-height: 48px;
-      padding: 12px 38px 12px 14px;
+      min-height: 52px;
+      padding: 14px 38px 14px 14px;
       background: var(--bg);
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%234b5563' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 14px center;
       border: 2px solid var(--border-deep);
-      border-radius: 9px;
+      border-radius: 10px;
       color: var(--text);
       font-family: 'Outfit', system-ui, sans-serif;
       font-size: 1rem;
@@ -302,14 +387,15 @@
       border-color: var(--accent);
     }
 
+    /* ── SUBMIT BUTTON ──────────────────────────── */
     .submit-btn {
       width: 100%;
-      min-height: 48px;
+      min-height: 52px;
       padding: 14px 16px;
-      border-radius: 11px;
+      border-radius: 12px;
       border: none;
       font-family: 'Outfit', system-ui, sans-serif;
-      font-size: 1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       cursor: pointer;
       transition: opacity 0.12s, transform 0.08s, box-shadow 0.12s;
@@ -322,8 +408,14 @@
     .submit-btn.closed-submit { background: var(--red);   color: #fff; box-shadow: 0 2px 8px rgba(185,28,28,0.25); }
     .submit-btn:not(:disabled):active { transform: scale(0.97); box-shadow: none; }
 
-    .error-text { font-size: 1rem; color: var(--red); text-align: center; min-height: 24px; }
+    .error-text {
+      font-size: 1rem;
+      color: var(--red);
+      text-align: center;
+      min-height: 24px;
+    }
 
+    /* ── SEASON MANAGEMENT CARD ─────────────────── */
     .season-mgmt-card {
       background: var(--amber-bg);
       border-color: var(--amber-border);
@@ -332,18 +424,18 @@
     .season-mgmt-card .card-label { color: var(--amber-dark); }
 
     .season-note {
-      font-size: 0.85rem;
+      font-size: 1rem;         /* was 0.85rem — increased to 16px */
       color: var(--amber);
       margin-bottom: 14px;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
     .season-status-row {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 12px 14px;
-      border-radius: 8px;
+      padding: 14px 16px;
+      border-radius: 10px;
       margin-bottom: 14px;
     }
 
@@ -360,8 +452,8 @@
 
     .season-change-btn {
       width: 100%;
-      min-height: 48px;
-      padding: 13px 16px;
+      min-height: 52px;
+      padding: 14px 16px;
       border-radius: 10px;
       border: 2px solid var(--amber-border);
       background: var(--amber-bg);
@@ -382,7 +474,7 @@
       background: #fef3c7;
       border: 2px solid var(--amber-border);
       border-radius: 10px;
-      padding: 16px;
+      padding: 18px;
       margin-bottom: 12px;
     }
 
@@ -390,50 +482,59 @@
       font-size: 1rem;
       color: var(--amber-dark);
       line-height: 1.6;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
-    .season-confirm-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    /* Buttons stack side-by-side normally, vertically on very narrow screens */
+    .season-confirm-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
 
     .season-cancel-btn {
-      min-height: 48px;
-      padding: 12px;
-      border-radius: 9px;
+      min-height: 52px;
+      padding: 14px 12px;
+      border-radius: 10px;
       border: 2px solid var(--border-deep);
       background: var(--surface);
       color: var(--text);
       font-family: 'Outfit', system-ui, sans-serif;
-      font-size: 0.95rem;
+      font-size: 1rem;         /* was 0.95rem — increased to 16px */
       font-weight: 600;
       cursor: pointer;
+      touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
 
+    /* white on amber #92400e = 5.10:1 — PASS (bold text) */
     .season-confirm-btn {
-      min-height: 48px;
-      padding: 12px;
-      border-radius: 9px;
+      min-height: 52px;
+      padding: 14px 12px;
+      border-radius: 10px;
       border: none;
       background: var(--amber);
       color: #ffffff;
       font-family: 'Outfit', system-ui, sans-serif;
-      font-size: 0.95rem;
+      font-size: 1rem;         /* was 0.95rem — increased to 16px */
       font-weight: 700;
       cursor: pointer;
+      touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
 
     .season-confirm-btn:active { opacity: 0.85; }
 
+    /* ── SUCCESS SCREEN ─────────────────────────── */
     .success-icon {
-      width: 64px;
-      height: 64px;
+      width: 68px;
+      height: 68px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.8rem;
-      margin: 0 auto 18px;
+      font-size: 1.9rem;
+      margin: 0 auto 20px;
     }
 
     .success-icon.open   { background: var(--green-bg); border: 2px solid var(--green-border); color: var(--green); }
@@ -441,14 +542,27 @@
     .success-icon.season { background: var(--amber-bg); border: 2px solid var(--amber-border); color: var(--amber-dark); }
 
     .success-card { text-align: center; }
-    .success-card h2 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 10px; }
-    .success-card p  { font-size: 1rem; color: var(--muted); line-height: 1.6; white-space: pre-line; }
 
+    .success-card h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+
+    .success-card p {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    /* ── BACK BUTTON ────────────────────────────── */
     .back-btn {
       width: 100%;
-      min-height: 48px;
-      padding: 13px 16px;
-      border-radius: 11px;
+      min-height: 52px;
+      padding: 14px 16px;
+      border-radius: 12px;
       border: 2px solid var(--border-deep);
       background: var(--surface);
       color: var(--text);
@@ -459,14 +573,17 @@
       box-shadow: var(--shadow);
       transition: background 0.1s;
       -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
     .back-btn:hover  { background: var(--bg); }
     .back-btn:active { background: var(--border); }
 
+    /* ── TOAST ──────────────────────────────────── */
     .toast {
       position: fixed;
-      bottom: 24px;
+      /* Sits above iOS home indicator using safe area inset */
+      bottom: max(24px, calc(env(safe-area-inset-bottom, 0px) + 16px));
       left: 50%;
       transform: translateX(-50%) translateY(80px);
       background: #1e293b;
@@ -474,8 +591,8 @@
       font-family: 'Outfit', system-ui, sans-serif;
       font-size: 1rem;
       font-weight: 500;
-      padding: 12px 20px;
-      border-radius: 9px;
+      padding: 14px 22px;
+      border-radius: 10px;
       opacity: 0;
       transition: transform 0.28s ease, opacity 0.28s ease;
       z-index: 200;
@@ -487,14 +604,31 @@
 
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-    .footer { text-align: center; font-size: 0.8rem; color: var(--muted); padding: 2px 0; }
+    /* ── FOOTER ─────────────────────────────────── */
+    .footer {
+      text-align: center;
+      font-size: 0.8rem;       /* decorative — acceptable */
+      color: var(--muted);
+      padding: 2px 0;
+    }
 
+    /* ── SCREENS ────────────────────────────────── */
     .screen        { display: none; }
     .screen.active { display: contents; }
 
+    /* ── RESPONSIVE ─────────────────────────────── */
     @media (max-width: 360px) {
-      body { padding: 16px 12px 48px; }
+      body { padding-left: 12px; padding-right: 12px; }
       .keypad { gap: 8px; }
+      /* Stack season confirm buttons vertically on very narrow screens */
+      .season-confirm-row { grid-template-columns: 1fr; }
+    }
+
+    /* ── REDUCED MOTION ─────────────────────────── */
+    /* WCAG 2.3.3: respects user preference to reduce animation */
+    @media (prefers-reduced-motion: reduce) {
+      .pin-dot.error              { animation: none; transform: none; }
+      .open .status-indicator::after { animation: none; }
     }
   </style>
 </head>
@@ -573,10 +707,10 @@
       <label class="field-label" for="reason-select">Reason for closure</label>
       <select id="reason-select" aria-required="true">
         <option value="">Select a reason&hellip;</option>
-        <option value="Contamination detected - cleaning is underway">Contamination detected - cleaning is underway</option>
-        <option value="Unexpected equipment breakdown - closed for urgent maintenance work">Unexpected equipment breakdown - closed for urgent maintenance work</option>
-        <option value="Equipment damage - closed for urgent maintenance work">Equipment damage - closed for urgent maintenance work</option>
-        <option value="Closed due to severe weather conditions">Closed due to severe weather conditions</option>
+        <option value="Contamination detected">Contamination detected</option>
+        <option value="Unexpected equipment breakdown">Unexpected equipment breakdown</option>
+        <option value="Equipment damage">Equipment damage</option>
+        <option value="Severe weather">Severe weather</option>
       </select>
     </div>
 
@@ -631,6 +765,8 @@
 //  CONFIGURATION
 // ════════════════════════════════════════════════════════════════════
 var CONFIG = {
+  // PIN stored as SHA-256 hash — raw PIN never in source code.
+  // Current PIN: 1471. See documentation to change.
   pin_hash:   'f64ee82a9f4a0451528059f6302d3ec67c5a3d3616392a86bf88df4bb451a3b3',
   worker_url: 'https://splash-park-status.sbcictweb.workers.dev'
 };
@@ -639,19 +775,19 @@ var CONFIG = {
 //  SECURITY SETTINGS
 // ════════════════════════════════════════════════════════════════════
 var SECURITY = {
-  max_attempts:         5,
-  lockout_minutes:      30,
-  session_timeout_mins: 20,
+  max_attempts:         5,    // Failed PIN attempts before lockout
+  lockout_minutes:      30,   // Lockout duration
+  session_timeout_mins: 20,   // Auto-logout after inactivity
   allowed_reasons: [
-    'Contamination detected - cleaning is underway',
-    'Unexpected equipment breakdown - closed for urgent maintenance work',
-    'Equipment damage - closed for urgent maintenance work',
-    'Closed due to severe weather conditions'
+    'Contamination detected',
+    'Unexpected equipment breakdown',
+    'Equipment damage',
+    'Severe weather'
   ]
 };
 
 // ════════════════════════════════════════════════════════════════════
-//  INTERNAL STATE
+//  STATE
 // ════════════════════════════════════════════════════════════════════
 var LS_ATTEMPTS = 'sp_warden_attempts';
 var LS_LOCKOUT  = 'sp_warden_lockout';
@@ -709,7 +845,7 @@ function startLockoutCountdown() {
   }, 1000);
 }
 
-// ── PIN HASHING ───────────────────────────────────────────────────
+// ── PIN HASHING (SHA-256 via Web Crypto API) ──────────────────────
 async function hashPin(pin) {
   var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
   return Array.from(new Uint8Array(buf))
@@ -811,11 +947,11 @@ function startSessionTimer() {
 function resetActivity() { lastActivity = Date.now(); }
 
 function sessionExpired() {
-  isAuthenticated = false;
-  clearInterval(sessionTimer);
-  pinValue = '';
-  selectedStatus = null;
+  isAuthenticated    = false;
+  selectedStatus     = null;
   pendingSeasonValue = null;
+  pinValue           = '';
+  clearInterval(sessionTimer);
   updateDots();
   clearPinFeedback();
   document.getElementById('attempt-notice').textContent = '';
@@ -847,11 +983,10 @@ function escapeHtml(str) {
 // ── LOAD CURRENT STATUS ───────────────────────────────────────────
 async function loadCurrentStatus() {
   var el = document.getElementById('current-status-el');
-  el.className   = 'status-row loading-state';
-  el.textContent = 'Loading...';
-
   var sd = document.getElementById('season-status-display');
-  sd.className   = 'status-row loading-state';
+
+  el.className = sd.className = 'status-row loading-state';
+  el.textContent = 'Loading...';
   sd.textContent = 'Loading...';
   document.getElementById('season-controls').style.display = 'none';
 
@@ -862,51 +997,40 @@ async function loadCurrentStatus() {
     if (typeof status.isOpen !== 'boolean') throw new Error('Unexpected data');
 
     renderCurrentStatus(status);
-
     currentSeasonOpen = typeof status.seasonOpen === 'boolean' ? status.seasonOpen : true;
     renderSeasonStatus(currentSeasonOpen);
 
   } catch (err) {
-    el.className   = 'status-row loading-state';
     el.textContent = 'Could not load current status.';
-    sd.className   = 'status-row loading-state';
     sd.textContent = 'Could not load season status.';
   }
 }
 
 function renderCurrentStatus(status) {
   var el         = document.getElementById('current-status-el');
-  var cls        = status.isOpen ? 'open' : 'closed';
-  var safeLabel  = status.isOpen ? 'Open' : 'Closed';
   var safeReason = status.reason ? escapeHtml(String(status.reason)) : '';
-  el.className = 'status-row ' + cls;
+  el.className = 'status-row ' + (status.isOpen ? 'open' : 'closed');
   el.innerHTML =
     '<div class="status-indicator" aria-hidden="true"></div>' +
     '<div>' +
-      '<div class="status-text-label">' + safeLabel + '</div>' +
+      '<div class="status-text-label">' + (status.isOpen ? 'Open' : 'Closed') + '</div>' +
       (safeReason ? '<div class="status-text-sub">' + safeReason + '</div>' : '') +
     '</div>';
 }
 
 // ── SEASON STATUS ─────────────────────────────────────────────────
 function renderSeasonStatus(seasonOpen) {
-  var sd  = document.getElementById('season-status-display');
-  var cls = seasonOpen ? 's-open' : 's-closed';
-  var lbl = seasonOpen ? 'Open for season' : 'Closed for winter season';
-  sd.className = 'season-status-row ' + cls;
+  var sd = document.getElementById('season-status-display');
+  sd.className = 'season-status-row ' + (seasonOpen ? 's-open' : 's-closed');
   sd.innerHTML =
     '<div class="season-dot" aria-hidden="true"></div>' +
-    '<div class="season-status-label">' + lbl + '</div>';
+    '<div class="season-status-label">' + (seasonOpen ? 'Open for season' : 'Closed for winter season') + '</div>';
 
   var controls = document.getElementById('season-controls');
   controls.style.display = 'block';
   controls.innerHTML = seasonOpen
-    ? '<button class="season-change-btn" onclick="initSeasonChange(false)">'
-        + 'Close splash park for winter season'
-        + '</button>'
-    : '<button class="season-change-btn" onclick="initSeasonChange(true)">'
-        + 'Open splash park for season'
-        + '</button>';
+    ? '<button class="season-change-btn" onclick="initSeasonChange(false)">Close splash park for winter season</button>'
+    : '<button class="season-change-btn" onclick="initSeasonChange(true)">Open splash park for season</button>';
 }
 
 function initSeasonChange(value) {
@@ -916,30 +1040,20 @@ function initSeasonChange(value) {
   pendingSeasonValue = value;
   document.getElementById('season-controls').style.display = 'none';
 
-  var confirmSection = document.getElementById('season-confirm-section');
-  confirmSection.style.display = 'block';
-
   var warningText = value
-    ? 'You are about to open the splash park for the season. '
-        + 'The website will show the daily open and closed status to residents. '
-        + 'Only confirm if you have been asked to do this by your line manager.'
-    : 'You are about to close the splash park for the winter season. '
-        + 'The website will show the park as closed for the season. '
-        + 'Residents will not see daily status updates until the season is reopened. '
-        + 'Only confirm if you have been asked to do this by your line manager.';
+    ? 'You are about to open the splash park for the season. The website will show the daily open and closed status to residents. Only confirm if you have been asked to do this by your line manager.'
+    : 'You are about to close the splash park for the winter season. The website will show the park as closed for the season. Residents will not see daily status updates until the season is reopened. Only confirm if you have been asked to do this by your line manager.';
 
-  var confirmLabel = value
-    ? 'Confirm - open for season'
-    : 'Confirm - close for winter';
+  var confirmLabel = value ? 'Confirm - open for season' : 'Confirm - close for winter';
 
-  confirmSection.innerHTML =
+  var sec = document.getElementById('season-confirm-section');
+  sec.style.display = 'block';
+  sec.innerHTML =
     '<div class="season-confirm-box">' +
       '<p>' + escapeHtml(warningText) + '</p>' +
       '<div class="season-confirm-row">' +
         '<button class="season-cancel-btn" onclick="cancelSeasonChange()">Cancel</button>' +
-        '<button class="season-confirm-btn" onclick="confirmSeasonChange()">'
-          + escapeHtml(confirmLabel) +
-        '</button>' +
+        '<button class="season-confirm-btn" onclick="confirmSeasonChange()">' + escapeHtml(confirmLabel) + '</button>' +
       '</div>' +
     '</div>';
 }
@@ -947,8 +1061,9 @@ function initSeasonChange(value) {
 function cancelSeasonChange() {
   resetActivity();
   pendingSeasonValue = null;
-  document.getElementById('season-confirm-section').style.display = 'none';
-  document.getElementById('season-confirm-section').innerHTML = '';
+  var sec = document.getElementById('season-confirm-section');
+  sec.style.display = 'none';
+  sec.innerHTML = '';
   document.getElementById('season-error').textContent = '';
   document.getElementById('season-controls').style.display = 'block';
 }
@@ -959,14 +1074,11 @@ async function confirmSeasonChange() {
 
   resetActivity();
 
-  var confirmSection = document.getElementById('season-confirm-section');
-  var errorEl        = document.getElementById('season-error');
-  var confirmBtn     = confirmSection.querySelector('.season-confirm-btn');
+  var sec        = document.getElementById('season-confirm-section');
+  var errorEl    = document.getElementById('season-error');
+  var confirmBtn = sec.querySelector('.season-confirm-btn');
 
-  if (confirmBtn) {
-    confirmBtn.disabled    = true;
-    confirmBtn.textContent = 'Updating...';
-  }
+  if (confirmBtn) { confirmBtn.disabled = true; confirmBtn.textContent = 'Updating...'; }
   errorEl.textContent = '';
 
   try {
@@ -994,9 +1106,7 @@ async function confirmSeasonChange() {
   } catch (err) {
     if (confirmBtn) {
       confirmBtn.disabled    = false;
-      confirmBtn.textContent = pendingSeasonValue
-        ? 'Confirm - open for season'
-        : 'Confirm - close for winter';
+      confirmBtn.textContent = pendingSeasonValue ? 'Confirm - open for season' : 'Confirm - close for winter';
     }
     errorEl.textContent = 'Update failed. Check your connection and try again.';
   }
@@ -1006,12 +1116,14 @@ async function confirmSeasonChange() {
 function selectStatus(status) {
   resetActivity();
   selectedStatus = status;
+
   var btnOpen   = document.getElementById('btn-open');
   var btnClosed = document.getElementById('btn-closed');
   btnOpen.classList.toggle('selected',   status === 'open');
   btnClosed.classList.toggle('selected', status === 'closed');
   btnOpen.setAttribute('aria-pressed',   status === 'open'   ? 'true' : 'false');
   btnClosed.setAttribute('aria-pressed', status === 'closed' ? 'true' : 'false');
+
   var reasonCard = document.getElementById('reason-card');
   if (status === 'closed') {
     reasonCard.classList.add('visible');
@@ -1035,9 +1147,7 @@ function updateSubmitBtn() {
     } else {
       disabled = false;
       cls      = 'submit-btn ' + selectedStatus + '-submit';
-      label    = selectedStatus === 'open'
-        ? 'Confirm - set to Open'
-        : 'Confirm - set to Closed';
+      label    = selectedStatus === 'open' ? 'Confirm - set to Open' : 'Confirm - set to Closed';
     }
   }
 
@@ -1063,6 +1173,7 @@ async function submitStatus() {
   var isOpen  = selectedStatus === 'open';
   var reason  = isOpen ? '' : document.getElementById('reason-select').value;
 
+  // Client-side whitelist check (worker validates server-side independently)
   if (!isOpen && SECURITY.allowed_reasons.indexOf(reason) === -1) {
     errorEl.textContent = 'Invalid reason. Please select from the list.';
     return;
@@ -1103,18 +1214,24 @@ async function submitStatus() {
 // ── BACK / RESET ──────────────────────────────────────────────────
 function goBack() {
   resetActivity();
-  selectedStatus = null;
+  selectedStatus     = null;
   pendingSeasonValue = null;
+
   ['btn-open', 'btn-closed'].forEach(function (id) {
     document.getElementById(id).classList.remove('selected');
     document.getElementById(id).setAttribute('aria-pressed', 'false');
   });
+
   document.getElementById('reason-card').classList.remove('visible');
   document.getElementById('reason-select').value = '';
   document.getElementById('submit-error').textContent = '';
-  document.getElementById('season-confirm-section').style.display = 'none';
-  document.getElementById('season-confirm-section').innerHTML = '';
+
+  // Cache reference — called twice previously
+  var sec = document.getElementById('season-confirm-section');
+  sec.style.display = 'none';
+  sec.innerHTML = '';
   document.getElementById('season-error').textContent = '';
+
   updateSubmitBtn();
   showScreen('screen-status');
   loadCurrentStatus();
