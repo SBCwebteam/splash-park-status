@@ -726,7 +726,7 @@
     <div class="card season-mgmt-card" id="season-card">
       <div class="card-label">Season management</div>
       <p class="season-note">
-        Use this section to open or close the splash park for the season.
+        Use this section to open or close the Splash Park for the season.
         Only make changes here when instructed by your line manager.
       </p>
 
@@ -1029,8 +1029,8 @@ function renderSeasonStatus(seasonOpen) {
   var controls = document.getElementById('season-controls');
   controls.style.display = 'block';
   controls.innerHTML = seasonOpen
-    ? '<button class="season-change-btn" onclick="initSeasonChange(false)">Close splash park for winter season</button>'
-    : '<button class="season-change-btn" onclick="initSeasonChange(true)">Open splash park for season</button>';
+    ? '<button class="season-change-btn" onclick="initSeasonChange(false)">Close Splash Park for winter season</button>'
+    : '<button class="season-change-btn" onclick="initSeasonChange(true)">Open Splash Park for season</button>';
 }
 
 function initSeasonChange(value) {
@@ -1041,8 +1041,8 @@ function initSeasonChange(value) {
   document.getElementById('season-controls').style.display = 'none';
 
   var warningText = value
-    ? 'You are about to open the splash park for the season. The website will show the daily open and closed status to residents. Only confirm if you have been asked to do this by your line manager.'
-    : 'You are about to close the splash park for the winter season. The website will show the park as closed for the season. Residents will not see daily status updates until the season is reopened. Only confirm if you have been asked to do this by your line manager.';
+    ? 'You are about to open the Splash Park for the season. The website will show the daily open and closed status to residents. Only confirm if you have been asked to do this by your line manager.'
+    : 'You are about to close the Splash Park for the winter season. The website will show the park as closed for the season. Residents will not see daily status updates until the season is reopened. Only confirm if you have been asked to do this by your line manager.';
 
   var confirmLabel = value ? 'Confirm - open for season' : 'Confirm - close for winter';
 
@@ -1094,11 +1094,11 @@ async function confirmSeasonChange() {
     icon.className   = 'success-icon season';
     icon.textContent = pendingSeasonValue ? '\u2713' : '\u2715';
     document.getElementById('success-heading').textContent = pendingSeasonValue
-      ? 'Splash park opened for the season'
-      : 'Splash park closed for winter season';
+      ? 'Splash Park opened for the season'
+      : 'Splash Park closed for winter season';
     document.getElementById('success-body').textContent = pendingSeasonValue
       ? 'The website will now show daily open and closed status to residents.'
-      : 'The website will now show the splash park as closed for the season.';
+      : 'The website will now show the Splash Park as closed for the season.';
 
     pendingSeasonValue = null;
     showScreen('screen-success');
@@ -1196,11 +1196,11 @@ async function submitStatus() {
     icon.className   = 'success-icon ' + selectedStatus;
     icon.textContent = isOpen ? '\u2713' : '\u2715';
     document.getElementById('success-heading').textContent = isOpen
-      ? 'Splash park is now Open'
-      : 'Splash park is now Closed';
+      ? 'Splash Park is now Open'
+      : 'Splash Park is now Closed';
     document.getElementById('success-body').textContent = isOpen
-      ? 'The website will now show the splash park as open and operating normally.'
-      : 'The website will show the splash park as closed.\n\nReason shown to residents: ' + reason;
+      ? 'The website will now show the Splash Park as open and operating normally.'
+      : 'The website will show the Splash Park as closed.\n\nReason shown to residents: ' + reason;
     showScreen('screen-success');
 
   } catch (err) {
