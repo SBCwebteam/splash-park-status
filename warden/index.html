@@ -7,19 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /*
-     * Colour palette — all pairs verified WCAG 2.2 AA
-     * text #111827 on white: 17.74:1 | on bg: 16.05:1
-     * muted #4b5563 on white: 7.56:1 | on bg: 6.84:1
-     * accent #1a56cc on white: 6.47:1
-     * green #166534 on white: 7.13:1 | on green-bg: 6.81:1
-     * red #b91c1c on white: 6.47:1 | on red-bg: 5.91:1
-     * amber #78350f on amber-bg: 8.75:1
-     * white on green #166534: 7.13:1
-     * white on red #b91c1c: 6.47:1
-     * white on amber #92400e: 5.10:1
-     * focus ring #1a56cc on white: 6.47:1
-     */
     :root {
       --bg:           #f0f4f8;
       --surface:      #ffffff;
@@ -58,7 +45,6 @@
       padding: 28px 16px 56px;
     }
 
-    /* WCAG 2.2 — 2.4.11 Focus Appearance */
     :focus-visible {
       outline: 3px solid var(--accent);
       outline-offset: 2px;
@@ -74,7 +60,6 @@
       gap: 14px;
     }
 
-    /* ── HEADER ─────────────────────────────────── */
     .header { text-align: center; padding: 4px 0 8px; }
 
     .header-tag {
@@ -94,7 +79,6 @@
     .header h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
     .header p  { font-size: 0.9rem; color: var(--muted); margin-top: 3px; }
 
-    /* ── CARDS ──────────────────────────────────── */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -112,7 +96,6 @@
       margin-bottom: 14px;
     }
 
-    /* ── LOCKOUT ────────────────────────────────── */
     #lockout-wrap { display: none; }
 
     .lockout-card {
@@ -133,7 +116,6 @@
       margin-top: 10px;
     }
 
-    /* ── PIN DOTS ───────────────────────────────── */
     .pin-dots {
       display: flex;
       justify-content: center;
@@ -164,7 +146,6 @@
       75%       { transform: translateX(5px); }
     }
 
-    /* ── KEYPAD ─────────────────────────────────── */
     .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 
     .key {
@@ -210,7 +191,6 @@
       margin-top: 10px;
     }
 
-    /* ── CURRENT STATUS ─────────────────────────── */
     .status-row {
       display: flex;
       align-items: center;
@@ -261,7 +241,6 @@
     .closed .status-text-label { color: var(--red); }
     .status-text-sub { font-size: 0.9rem; color: var(--muted); margin-top: 2px; }
 
-    /* ── TOGGLE BUTTONS ─────────────────────────── */
     .toggle-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
 
     .toggle-btn {
@@ -286,7 +265,6 @@
     .toggle-btn.open-btn.selected   { border-color: var(--green); background: var(--green-bg); color: var(--green); }
     .toggle-btn.closed-btn.selected { border-color: var(--red);   background: var(--red-bg);   color: var(--red);   }
 
-    /* ── REASON DROPDOWN ────────────────────────── */
     .reason-card         { display: none; }
     .reason-card.visible { display: block; }
 
@@ -324,7 +302,6 @@
       border-color: var(--accent);
     }
 
-    /* ── SUBMIT BUTTON ──────────────────────────── */
     .submit-btn {
       width: 100%;
       min-height: 48px;
@@ -347,7 +324,6 @@
 
     .error-text { font-size: 1rem; color: var(--red); text-align: center; min-height: 24px; }
 
-    /* ── SEASON MANAGEMENT CARD ─────────────────── */
     .season-mgmt-card {
       background: var(--amber-bg);
       border-color: var(--amber-border);
@@ -449,7 +425,6 @@
 
     .season-confirm-btn:active { opacity: 0.85; }
 
-    /* ── SUCCESS SCREEN ─────────────────────────── */
     .success-icon {
       width: 64px;
       height: 64px;
@@ -469,7 +444,6 @@
     .success-card h2 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 10px; }
     .success-card p  { font-size: 1rem; color: var(--muted); line-height: 1.6; white-space: pre-line; }
 
-    /* ── BACK BUTTON ────────────────────────────── */
     .back-btn {
       width: 100%;
       min-height: 48px;
@@ -490,7 +464,6 @@
     .back-btn:hover  { background: var(--bg); }
     .back-btn:active { background: var(--border); }
 
-    /* ── TOAST ──────────────────────────────────── */
     .toast {
       position: fixed;
       bottom: 24px;
@@ -514,10 +487,8 @@
 
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-    /* ── FOOTER ─────────────────────────────────── */
     .footer { text-align: center; font-size: 0.8rem; color: var(--muted); padding: 2px 0; }
 
-    /* ── SCREENS ────────────────────────────────── */
     .screen        { display: none; }
     .screen.active { display: contents; }
 
@@ -602,9 +573,9 @@
       <label class="field-label" for="reason-select">Reason for closure</label>
       <select id="reason-select" aria-required="true">
         <option value="">Select a reason&hellip;</option>
-        <option value="Contamination detected — cleaning is underway">Contamination detected &mdash; cleaning is underway</option>
-        <option value="Unexpected equipment breakdown — closed for urgent maintenance work">Unexpected equipment breakdown &mdash; closed for urgent maintenance work</option>
-        <option value="Equipment damage — closed for urgent maintenance work">Equipment damage &mdash; closed for urgent maintenance work</option>
+        <option value="Contamination detected - cleaning is underway">Contamination detected - cleaning is underway</option>
+        <option value="Unexpected equipment breakdown - closed for urgent maintenance work">Unexpected equipment breakdown - closed for urgent maintenance work</option>
+        <option value="Equipment damage - closed for urgent maintenance work">Equipment damage - closed for urgent maintenance work</option>
         <option value="Closed due to severe weather conditions">Closed due to severe weather conditions</option>
       </select>
     </div>
@@ -622,7 +593,7 @@
       <div class="card-label">Season management</div>
       <p class="season-note">
         Use this section to open or close the splash park for the season.
-        Only make changes here when instructed by the Web Team.
+        Only make changes here when instructed by your line manager.
       </p>
 
       <div id="season-status-display" class="status-row loading-state"
@@ -660,8 +631,6 @@
 //  CONFIGURATION
 // ════════════════════════════════════════════════════════════════════
 var CONFIG = {
-  // PIN stored as SHA-256 hash. Current PIN: 1471 (change after first use).
-  // To generate a new hash: see setup documentation.
   pin_hash:   'f64ee82a9f4a0451528059f6302d3ec67c5a3d3616392a86bf88df4bb451a3b3',
   worker_url: 'https://splash-park-status.sbcictweb.workers.dev'
 };
@@ -674,9 +643,9 @@ var SECURITY = {
   lockout_minutes:      30,
   session_timeout_mins: 20,
   allowed_reasons: [
-    'Contamination detected \u2014 cleaning is underway',
-    'Unexpected equipment breakdown \u2014 closed for urgent maintenance work',
-    'Equipment damage \u2014 closed for urgent maintenance work',
+    'Contamination detected - cleaning is underway',
+    'Unexpected equipment breakdown - closed for urgent maintenance work',
+    'Equipment damage - closed for urgent maintenance work',
     'Closed due to severe weather conditions'
   ]
 };
@@ -740,7 +709,7 @@ function startLockoutCountdown() {
   }, 1000);
 }
 
-// ── PIN HASHING (SHA-256 via Web Crypto API) ──────────────────────
+// ── PIN HASHING ───────────────────────────────────────────────────
 async function hashPin(pin) {
   var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
   return Array.from(new Uint8Array(buf))
@@ -813,7 +782,7 @@ async function checkPin() {
       }, 900);
     } else {
       var fb = document.getElementById('pin-feedback');
-      fb.textContent = 'Incorrect PIN \u2014 try again.';
+      fb.textContent = 'Incorrect PIN - try again.';
       fb.className   = 'pin-feedback error';
       document.getElementById('attempt-notice').textContent = remaining === 1
         ? 'Warning: 1 attempt remaining before lockout'
@@ -851,7 +820,7 @@ function sessionExpired() {
   clearPinFeedback();
   document.getElementById('attempt-notice').textContent = '';
   showScreen('screen-pin');
-  showToast('Session expired \u2014 please re-enter your PIN.');
+  showToast('Session expired - please re-enter your PIN.');
 }
 
 ['click', 'touchstart', 'keydown'].forEach(function (evt) {
@@ -879,11 +848,11 @@ function escapeHtml(str) {
 async function loadCurrentStatus() {
   var el = document.getElementById('current-status-el');
   el.className   = 'status-row loading-state';
-  el.textContent = 'Loading\u2026';
+  el.textContent = 'Loading...';
 
   var sd = document.getElementById('season-status-display');
   sd.className   = 'status-row loading-state';
-  sd.textContent = 'Loading\u2026';
+  sd.textContent = 'Loading...';
   document.getElementById('season-controls').style.display = 'none';
 
   try {
@@ -894,7 +863,6 @@ async function loadCurrentStatus() {
 
     renderCurrentStatus(status);
 
-    // Default seasonOpen to true if field is missing (backward compatibility)
     currentSeasonOpen = typeof status.seasonOpen === 'boolean' ? status.seasonOpen : true;
     renderSeasonStatus(currentSeasonOpen);
 
@@ -954,15 +922,15 @@ function initSeasonChange(value) {
   var warningText = value
     ? 'You are about to open the splash park for the season. '
         + 'The website will show the daily open and closed status to residents. '
-        + 'Only confirm if you have been asked to do this by the Web Team.'
+        + 'Only confirm if you have been asked to do this by your line manager.'
     : 'You are about to close the splash park for the winter season. '
         + 'The website will show the park as closed for the season. '
         + 'Residents will not see daily status updates until the season is reopened. '
-        + 'Only confirm if you have been asked to do this by the Web Team.';
+        + 'Only confirm if you have been asked to do this by your line manager.';
 
   var confirmLabel = value
-    ? 'Confirm \u2014 open for season'
-    : 'Confirm \u2014 close for winter';
+    ? 'Confirm - open for season'
+    : 'Confirm - close for winter';
 
   confirmSection.innerHTML =
     '<div class="season-confirm-box">' +
@@ -997,7 +965,7 @@ async function confirmSeasonChange() {
 
   if (confirmBtn) {
     confirmBtn.disabled    = true;
-    confirmBtn.textContent = 'Updating\u2026';
+    confirmBtn.textContent = 'Updating...';
   }
   errorEl.textContent = '';
 
@@ -1027,8 +995,8 @@ async function confirmSeasonChange() {
     if (confirmBtn) {
       confirmBtn.disabled    = false;
       confirmBtn.textContent = pendingSeasonValue
-        ? 'Confirm \u2014 open for season'
-        : 'Confirm \u2014 close for winter';
+        ? 'Confirm - open for season'
+        : 'Confirm - close for winter';
     }
     errorEl.textContent = 'Update failed. Check your connection and try again.';
   }
@@ -1068,8 +1036,8 @@ function updateSubmitBtn() {
       disabled = false;
       cls      = 'submit-btn ' + selectedStatus + '-submit';
       label    = selectedStatus === 'open'
-        ? 'Confirm \u2014 set to Open'
-        : 'Confirm \u2014 set to Closed';
+        ? 'Confirm - set to Open'
+        : 'Confirm - set to Closed';
     }
   }
 
@@ -1095,14 +1063,13 @@ async function submitStatus() {
   var isOpen  = selectedStatus === 'open';
   var reason  = isOpen ? '' : document.getElementById('reason-select').value;
 
-  // Client-side whitelist check (worker also validates server-side)
   if (!isOpen && SECURITY.allowed_reasons.indexOf(reason) === -1) {
     errorEl.textContent = 'Invalid reason. Please select from the list.';
     return;
   }
 
   btn.disabled    = true;
-  btn.textContent = 'Updating\u2026';
+  btn.textContent = 'Updating...';
   errorEl.textContent = '';
 
   try {
@@ -1128,7 +1095,7 @@ async function submitStatus() {
   } catch (err) {
     btn.disabled    = false;
     btn.className   = 'submit-btn ' + selectedStatus + '-submit';
-    btn.textContent = 'Confirm \u2014 set to ' + (isOpen ? 'Open' : 'Closed');
+    btn.textContent = 'Confirm - set to ' + (isOpen ? 'Open' : 'Closed');
     errorEl.textContent = 'Update failed. Check your connection and try again.';
   }
 }
