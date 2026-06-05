@@ -2,16 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!--
-    user-scalable=no removed: violates WCAG 1.4.4 Resize Text.
-    touch-action: manipulation on all buttons prevents double-tap zoom instead.
-  -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Prevents iOS from auto-linking PIN digits as phone numbers -->
   <meta name="format-detection" content="telephone=no, date=no, email=no, address=no">
-  <!-- Matches page background in Android browser chrome -->
   <meta name="theme-color" content="#f0f4f8">
-  <!-- Improves experience when bookmarked to iOS home screen -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Splash Park Status">
@@ -19,17 +12,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /*
-     * Colour palette — all pairs verified WCAG 2.2 AA
-     * text #111827 on white: 17.74:1 | on bg: 16.05:1
-     * muted #4b5563 on white: 7.56:1 | on bg: 6.84:1
-     * accent #1a56cc on white: 6.47:1
-     * green #166534 on white: 7.13:1 | on green-bg: 6.81:1
-     * red #b91c1c on white: 6.47:1 | on red-bg: 5.91:1
-     * amber #78350f on amber-bg: 8.75:1
-     * white on green: 7.13:1 | white on red: 6.47:1 | white on amber: 5.10:1
-     * focus ring #1a56cc on white: 6.47:1
-     */
     :root {
       --bg:           #f0f4f8;
       --surface:      #ffffff;
@@ -69,20 +51,10 @@
       overscroll-behavior: contain;
     }
 
-    :focus-visible {
-      outline: 3px solid var(--accent);
-      outline-offset: 2px;
-      border-radius: 4px;
-    }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
     :focus:not(:focus-visible) { outline: none; }
 
-    .wrap {
-      width: 100%;
-      max-width: 400px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
+    .wrap { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 14px; }
 
     .header { text-align: center; padding: 4px 0 8px; }
 
@@ -133,36 +105,19 @@
     .lockout-heading { font-size: 1.1rem; font-weight: 700; color: var(--amber-dark); margin-bottom: 8px; }
     .lockout-body    { font-size: 1rem; color: var(--amber-dark); line-height: 1.6; }
 
-    #lockout-countdown {
-      font-weight: 700;
-      font-size: 1.25rem;
-      display: block;
-      margin-top: 10px;
-    }
+    #lockout-countdown { font-weight: 700; font-size: 1.25rem; display: block; margin-top: 10px; }
 
-    .pin-dots {
-      display: flex;
-      justify-content: center;
-      gap: 18px;
-      margin-bottom: 24px;
-    }
+    .pin-dots { display: flex; justify-content: center; gap: 18px; margin-bottom: 24px; }
 
     .pin-dot {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--bg);
-      border: 2px solid var(--border-deep);
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--bg); border: 2px solid var(--border-deep);
       transition: background 0.12s, border-color 0.12s, transform 0.12s;
     }
 
     .pin-dot.filled { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
 
-    .pin-dot.error {
-      background: var(--red);
-      border-color: var(--red);
-      animation: shake 0.32s ease;
-    }
+    .pin-dot.error { background: var(--red); border-color: var(--red); animation: shake 0.32s ease; }
 
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
@@ -173,86 +128,36 @@
     .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 
     .key {
-      min-height: 64px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--surface);
-      color: var(--text);
-      font-family: 'Outfit', system-ui, sans-serif;
-      font-size: 1.35rem;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
-      transition: background 0.1s, transform 0.08s;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-      touch-action: manipulation;
+      min-height: 64px; border: 1px solid var(--border); border-radius: 12px;
+      background: var(--surface); color: var(--text);
+      font-family: 'Outfit', system-ui, sans-serif; font-size: 1.35rem; font-weight: 500;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06); transition: background 0.1s, transform 0.08s;
+      -webkit-tap-highlight-color: transparent; user-select: none; touch-action: manipulation;
     }
 
     .key:hover  { background: var(--bg); }
     .key:active { background: var(--border); box-shadow: none; transform: scale(0.93); }
     .key.action { font-size: 1rem; font-weight: 600; color: var(--muted); }
 
-    .pin-feedback {
-      font-size: 1rem;
-      font-weight: 500;
-      min-height: 24px;
-      text-align: center;
-      margin-top: 6px;
-    }
-
+    .pin-feedback { font-size: 1rem; font-weight: 500; min-height: 24px; text-align: center; margin-top: 6px; }
     .pin-feedback.error { color: var(--red); }
 
-    .attempt-notice {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--amber);
-      min-height: 24px;
-      text-align: center;
-      margin-top: 12px;
-    }
+    .attempt-notice { font-size: 1rem; font-weight: 600; color: var(--amber); min-height: 24px; text-align: center; margin-top: 12px; }
 
-    .status-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 16px;
-      border-radius: 10px;
-    }
+    .status-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 10px; }
 
-    .status-row.loading-state {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      font-size: 1rem;
-      color: var(--muted);
-      font-style: italic;
-    }
-
+    .status-row.loading-state { background: var(--bg); border: 1px solid var(--border); font-size: 1rem; color: var(--muted); font-style: italic; }
     .status-row.open   { background: var(--green-bg); border: 1px solid var(--green-border); }
     .status-row.closed { background: var(--red-bg);   border: 1px solid var(--red-border); }
 
-    .status-indicator {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      position: relative;
-    }
-
+    .status-indicator { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; position: relative; }
     .open   .status-indicator { background: var(--green); }
     .closed .status-indicator { background: var(--red); }
 
     .open .status-indicator::after {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      border-radius: 50%;
-      background: var(--green);
-      opacity: 0.25;
-      animation: ripple 2.2s ease-out infinite;
+      content: ''; position: absolute; inset: -4px; border-radius: 50%;
+      background: var(--green); opacity: 0.25; animation: ripple 2.2s ease-out infinite;
     }
 
     @keyframes ripple {
@@ -268,77 +173,42 @@
     .toggle-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
 
     .toggle-btn {
-      min-height: 68px;
-      border-radius: 12px;
-      border: 2px solid var(--border);
-      background: var(--bg);
-      color: var(--muted);
-      font-family: 'Outfit', system-ui, sans-serif;
-      font-size: 1.05rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 8px;
-      transition: border-color 0.14s, background 0.14s, color 0.14s;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
+      min-height: 68px; border-radius: 12px; border: 2px solid var(--border);
+      background: var(--bg); color: var(--muted);
+      font-family: 'Outfit', system-ui, sans-serif; font-size: 1.05rem; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      padding: 12px 8px; transition: border-color 0.14s, background 0.14s, color 0.14s;
+      -webkit-tap-highlight-color: transparent; touch-action: manipulation;
     }
 
     .toggle-btn.open-btn.selected   { border-color: var(--green); background: var(--green-bg); color: var(--green); }
-    .toggle-btn.closed-btn.selected { border-color: var(--red);   background: var(--red-bg);   color: var(--red);   }
+    .toggle-btn.closed-btn.selected { border-color: var(--red);   background: var(--red-bg);   color: var(--red); }
 
     .reason-card         { display: none; }
     .reason-card.visible { display: block; }
 
     .field-label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      margin-bottom: 9px;
-      display: block;
+      font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--muted); margin-bottom: 9px; display: block;
     }
 
     select {
-      width: 100%;
-      min-height: 52px;
-      padding: 14px 38px 14px 14px;
+      width: 100%; min-height: 52px; padding: 14px 38px 14px 14px;
       background: var(--bg);
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%234b5563' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-      border: 2px solid var(--border-deep);
-      border-radius: 10px;
-      color: var(--text);
-      font-family: 'Outfit', system-ui, sans-serif;
-      font-size: 1rem;
-      appearance: none;
-      -webkit-appearance: none;
-      transition: border-color 0.12s, box-shadow 0.12s;
+      background-repeat: no-repeat; background-position: right 14px center;
+      border: 2px solid var(--border-deep); border-radius: 10px; color: var(--text);
+      font-family: 'Outfit', system-ui, sans-serif; font-size: 1rem;
+      appearance: none; -webkit-appearance: none; transition: border-color 0.12s, box-shadow 0.12s;
     }
 
-    select:focus-visible {
-      outline: 3px solid var(--accent);
-      outline-offset: 2px;
-      border-color: var(--accent);
-    }
+    select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-color: var(--accent); }
 
     .submit-btn {
-      width: 100%;
-      min-height: 52px;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: none;
-      font-family: 'Outfit', system-ui, sans-serif;
-      font-size: 1.05rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: opacity 0.12s, transform 0.08s, box-shadow 0.12s;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
+      width: 100%; min-height: 52px; padding: 14px 16px; border-radius: 12px; border: none;
+      font-family: 'Outfit', system-ui, sans-serif; font-size: 1.05rem; font-weight: 700;
+      cursor: pointer; transition: opacity 0.12s, transform 0.08s, box-shadow 0.12s;
+      -webkit-tap-highlight-color: transparent; touch-action: manipulation;
     }
 
     .submit-btn:disabled      { background: var(--border); color: var(--muted); cursor: not-allowed; }
@@ -351,22 +221,9 @@
     .season-mgmt-card { background: var(--amber-bg); border-color: var(--amber-border); }
     .season-mgmt-card .card-label { color: var(--amber-dark); }
 
-    .season-note {
-      font-size: 1rem;
-      color: var(--amber);
-      margin-bottom: 14px;
-      line-height: 1.6;
-    }
+    .season-note { font-size: 1rem; color: var(--amber); margin-bottom: 14px; line-height: 1.6; }
 
-    .season-status-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 16px;
-      border-radius: 10px;
-      margin-bottom: 14px;
-    }
-
+    .season-status-row { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 10px; margin-bottom: 14px; }
     .season-status-row.s-open   { background: var(--green-bg); border: 1px solid var(--green-border); }
     .season-status-row.s-closed { background: var(--red-bg);   border: 1px solid var(--red-border); }
 
@@ -379,83 +236,45 @@
     .s-closed .season-status-label { color: var(--red); }
 
     .season-change-btn {
-      width: 100%;
-      min-height: 52px;
-      padding: 14px 16px;
-      border-radius: 10px;
-      border: 2px solid var(--amber-border);
-      background: var(--amber-bg);
-      color: var(--amber-dark);
-      font-family: 'Outfit', system-ui, sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.12s;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
+      width: 100%; min-height: 52px; padding: 14px 16px; border-radius: 10px;
+      border: 2px solid var(--amber-border); background: var(--amber-bg); color: var(--amber-dark);
+      font-family: 'Outfit', system-ui, sans-serif; font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: background 0.12s;
+      -webkit-tap-highlight-color: transparent; touch-action: manipulation;
     }
 
     .season-change-btn:hover  { background: #fef3c7; }
     .season-change-btn:active { background: #fde68a; }
 
     .season-confirm-box {
-      background: #fef3c7;
-      border: 2px solid var(--amber-border);
-      border-radius: 10px;
-      padding: 18px;
-      margin-bottom: 12px;
+      background: #fef3c7; border: 2px solid var(--amber-border);
+      border-radius: 10px; padding: 18px; margin-bottom: 12px;
     }
 
-    .season-confirm-box p {
-      font-size: 1rem;
-      color: var(--amber-dark);
-      line-height: 1.6;
-      margin-bottom: 16px;
-    }
+    .season-confirm-box p { font-size: 1rem; color: var(--amber-dark); line-height: 1.6; margin-bottom: 16px; }
 
     .season-confirm-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
     .season-cancel-btn {
-      min-height: 52px;
-      padding: 14px 12px;
-      border-radius: 10px;
-      border: 2px solid var(--border-deep);
-      background: var(--surface);
-      color: var(--text);
-      font-family: 'Outfit', system-ui, sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
+      min-height: 52px; padding: 14px 12px; border-radius: 10px;
+      border: 2px solid var(--border-deep); background: var(--surface); color: var(--text);
+      font-family: 'Outfit', system-ui, sans-serif; font-size: 1rem; font-weight: 600;
+      cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
     }
 
     .season-confirm-btn {
-      min-height: 52px;
-      padding: 14px 12px;
-      border-radius: 10px;
-      border: none;
-      background: var(--amber);
-      color: #ffffff;
-      font-family: 'Outfit', system-ui, sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
+      min-height: 52px; padding: 14px 12px; border-radius: 10px; border: none;
+      background: var(--amber); color: #ffffff;
+      font-family: 'Outfit', system-ui, sans-serif; font-size: 1rem; font-weight: 700;
+      cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
     }
 
     .season-confirm-btn:active { opacity: 0.85; }
 
     .success-icon {
-      width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.9rem;
-      margin: 0 auto 20px;
+      width: 68px; height: 68px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.9rem; margin: 0 auto 20px;
     }
 
     .success-icon.open   { background: var(--green-bg); border: 2px solid var(--green-border); color: var(--green); }
@@ -467,21 +286,11 @@
     .success-card p  { font-size: 1rem; color: var(--muted); line-height: 1.6; white-space: pre-line; }
 
     .back-btn {
-      width: 100%;
-      min-height: 52px;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 2px solid var(--border-deep);
-      background: var(--surface);
-      color: var(--text);
-      font-family: 'Outfit', system-ui, sans-serif;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      box-shadow: var(--shadow);
-      transition: background 0.1s;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
+      width: 100%; min-height: 52px; padding: 14px 16px; border-radius: 12px;
+      border: 2px solid var(--border-deep); background: var(--surface); color: var(--text);
+      font-family: 'Outfit', system-ui, sans-serif; font-size: 1rem; font-weight: 500;
+      cursor: pointer; box-shadow: var(--shadow); transition: background 0.1s;
+      -webkit-tap-highlight-color: transparent; touch-action: manipulation;
     }
 
     .back-btn:hover  { background: var(--bg); }
@@ -490,22 +299,13 @@
     .toast {
       position: fixed;
       bottom: max(24px, calc(env(safe-area-inset-bottom, 0px) + 16px));
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: #1e293b;
-      color: #f8fafc;
-      font-family: 'Outfit', system-ui, sans-serif;
-      font-size: 1rem;
-      font-weight: 500;
-      padding: 14px 22px;
-      border-radius: 10px;
-      opacity: 0;
+      left: 50%; transform: translateX(-50%) translateY(80px);
+      background: #1e293b; color: #f8fafc;
+      font-family: 'Outfit', system-ui, sans-serif; font-size: 1rem; font-weight: 500;
+      padding: 14px 22px; border-radius: 10px; opacity: 0;
       transition: transform 0.28s ease, opacity 0.28s ease;
-      z-index: 200;
-      pointer-events: none;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
-      max-width: calc(100vw - 32px);
-      text-align: center;
+      z-index: 200; pointer-events: none;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18); max-width: calc(100vw - 32px); text-align: center;
     }
 
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -522,8 +322,8 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .pin-dot.error                  { animation: none; transform: none; }
-      .open .status-indicator::after  { animation: none; }
+      .pin-dot.error                 { animation: none; transform: none; }
+      .open .status-indicator::after { animation: none; }
     }
   </style>
 </head>
@@ -606,6 +406,7 @@
         <option value="Unexpected equipment breakdown">Unexpected equipment breakdown</option>
         <option value="Equipment damage">Equipment damage</option>
         <option value="Severe weather">Severe weather</option>
+        <option value="Unforeseen circumstances">Unforeseen circumstances</option>
       </select>
     </div>
 
@@ -660,8 +461,6 @@
 //  CONFIGURATION
 // ════════════════════════════════════════════════════════════════════
 var CONFIG = {
-  // PIN stored as SHA-256 hash — raw PIN never in source code.
-  // Current PIN: 1471. See documentation to change.
   pin_hash:   'f64ee82a9f4a0451528059f6302d3ec67c5a3d3616392a86bf88df4bb451a3b3',
   worker_url: 'https://splash-park-status.sbcictweb.workers.dev'
 };
@@ -677,7 +476,8 @@ var SECURITY = {
     'Contamination detected',
     'Unexpected equipment breakdown',
     'Equipment damage',
-    'Severe weather'
+    'Severe weather',
+    'Unforeseen circumstances'
   ]
 };
 
@@ -740,7 +540,7 @@ function startLockoutCountdown() {
   }, 1000);
 }
 
-// ── PIN HASHING (SHA-256 via Web Crypto API) ──────────────────────
+// ── PIN HASHING ───────────────────────────────────────────────────
 async function hashPin(pin) {
   var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
   return Array.from(new Uint8Array(buf))
@@ -919,7 +719,7 @@ function renderSeasonStatus(seasonOpen) {
   sd.className = 'season-status-row ' + (seasonOpen ? 's-open' : 's-closed');
   sd.innerHTML =
     '<div class="season-dot" aria-hidden="true"></div>' +
-    '<div class="season-status-label">' + (seasonOpen ? 'Open for summer season' : 'Closed for winter season') + '</div>';
+    '<div class="season-status-label">' + (seasonOpen ? 'Open for season' : 'Closed for winter season') + '</div>';
 
   var controls = document.getElementById('season-controls');
   controls.style.display = 'block';
