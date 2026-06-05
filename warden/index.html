@@ -12,6 +12,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /*
+     * Colour palette — all pairs verified WCAG 2.2 AA
+     * text #111827 on white: 17.74:1 | on bg: 16.05:1
+     * muted #4b5563 on white: 7.56:1 | on bg: 6.84:1
+     * accent #1a56cc on white: 6.47:1
+     * green #166534 on white: 7.13:1 | on green-bg: 6.81:1
+     * red #b91c1c on white: 6.47:1 | on red-bg: 5.91:1
+     * amber #78350f on amber-bg: 8.75:1
+     * white on green: 7.13:1 | white on red: 6.47:1 | white on amber: 5.10:1
+     * focus ring #1a56cc on white: 6.47:1
+     */
     :root {
       --bg:           #f0f4f8;
       --surface:      #ffffff;
@@ -104,7 +115,6 @@
 
     .lockout-heading { font-size: 1.1rem; font-weight: 700; color: var(--amber-dark); margin-bottom: 8px; }
     .lockout-body    { font-size: 1rem; color: var(--amber-dark); line-height: 1.6; }
-
     #lockout-countdown { font-weight: 700; font-size: 1.25rem; display: block; margin-top: 10px; }
 
     .pin-dots { display: flex; justify-content: center; gap: 18px; margin-bottom: 24px; }
@@ -115,9 +125,14 @@
       transition: background 0.12s, border-color 0.12s, transform 0.12s;
     }
 
-    .pin-dot.filled { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
+    .pin-dot.filled  { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
+    .pin-dot.loading { background: var(--muted);  border-color: var(--muted); }
 
-    .pin-dot.error { background: var(--red); border-color: var(--red); animation: shake 0.32s ease; }
+    .pin-dot.error {
+      background: var(--red);
+      border-color: var(--red);
+      animation: shake 0.32s ease;
+    }
 
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
@@ -136,17 +151,18 @@
       -webkit-tap-highlight-color: transparent; user-select: none; touch-action: manipulation;
     }
 
-    .key:hover  { background: var(--bg); }
-    .key:active { background: var(--border); box-shadow: none; transform: scale(0.93); }
-    .key.action { font-size: 1rem; font-weight: 600; color: var(--muted); }
+    .key:hover         { background: var(--bg); }
+    .key:active        { background: var(--border); box-shadow: none; transform: scale(0.93); }
+    .key.action        { font-size: 1rem; font-weight: 600; color: var(--muted); }
+    .key:disabled      { opacity: 0.4; cursor: not-allowed; }
 
     .pin-feedback { font-size: 1rem; font-weight: 500; min-height: 24px; text-align: center; margin-top: 6px; }
-    .pin-feedback.error { color: var(--red); }
+    .pin-feedback.error   { color: var(--red); }
+    .pin-feedback.loading { color: var(--muted); font-style: italic; }
 
     .attempt-notice { font-size: 1rem; font-weight: 600; color: var(--amber); min-height: 24px; text-align: center; margin-top: 12px; }
 
     .status-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 10px; }
-
     .status-row.loading-state { background: var(--bg); border: 1px solid var(--border); font-size: 1rem; color: var(--muted); font-style: italic; }
     .status-row.open   { background: var(--green-bg); border: 1px solid var(--green-border); }
     .status-row.closed { background: var(--red-bg);   border: 1px solid var(--red-border); }
@@ -187,10 +203,7 @@
     .reason-card         { display: none; }
     .reason-card.visible { display: block; }
 
-    .field-label {
-      font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.08em; color: var(--muted); margin-bottom: 9px; display: block;
-    }
+    .field-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 9px; display: block; }
 
     select {
       width: 100%; min-height: 52px; padding: 14px 38px 14px 14px;
@@ -220,7 +233,6 @@
 
     .season-mgmt-card { background: var(--amber-bg); border-color: var(--amber-border); }
     .season-mgmt-card .card-label { color: var(--amber-dark); }
-
     .season-note { font-size: 1rem; color: var(--amber); margin-bottom: 14px; line-height: 1.6; }
 
     .season-status-row { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 10px; margin-bottom: 14px; }
@@ -246,13 +258,8 @@
     .season-change-btn:hover  { background: #fef3c7; }
     .season-change-btn:active { background: #fde68a; }
 
-    .season-confirm-box {
-      background: #fef3c7; border: 2px solid var(--amber-border);
-      border-radius: 10px; padding: 18px; margin-bottom: 12px;
-    }
-
+    .season-confirm-box { background: #fef3c7; border: 2px solid var(--amber-border); border-radius: 10px; padding: 18px; margin-bottom: 12px; }
     .season-confirm-box p { font-size: 1rem; color: var(--amber-dark); line-height: 1.6; margin-bottom: 16px; }
-
     .season-confirm-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
     .season-cancel-btn {
@@ -271,12 +278,7 @@
 
     .season-confirm-btn:active { opacity: 0.85; }
 
-    .success-icon {
-      width: 68px; height: 68px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.9rem; margin: 0 auto 20px;
-    }
-
+    .success-icon { width: 68px; height: 68px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.9rem; margin: 0 auto 20px; }
     .success-icon.open   { background: var(--green-bg); border: 2px solid var(--green-border); color: var(--green); }
     .success-icon.closed { background: var(--red-bg);   border: 2px solid var(--red-border);   color: var(--red); }
     .success-icon.season { background: var(--amber-bg); border: 2px solid var(--amber-border); color: var(--amber-dark); }
@@ -459,9 +461,11 @@
 <script>
 // ════════════════════════════════════════════════════════════════════
 //  CONFIGURATION
+//  pin_hash removed — PIN is now verified server-side by the worker.
+//  The hash is stored as the PIN_HASH Cloudflare secret and never
+//  appears in this file or in the GitHub repository.
 // ════════════════════════════════════════════════════════════════════
 var CONFIG = {
-  pin_hash:   'f64ee82a9f4a0451528059f6302d3ec67c5a3d3616392a86bf88df4bb451a3b3',
   worker_url: 'https://splash-park-status.sbcictweb.workers.dev'
 };
 
@@ -489,6 +493,7 @@ var LS_LOCKOUT  = 'sp_warden_lockout';
 
 var pinValue           = '';
 var isAuthenticated    = false;
+var isVerifying        = false;   // prevents double-submission during network call
 var lastActivity       = Date.now();
 var selectedStatus     = null;
 var currentSeasonOpen  = true;
@@ -540,7 +545,7 @@ function startLockoutCountdown() {
   }, 1000);
 }
 
-// ── PIN HASHING ───────────────────────────────────────────────────
+// ── PIN HASHING (SHA-256 via Web Crypto API) ──────────────────────
 async function hashPin(pin) {
   var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
   return Array.from(new Uint8Array(buf))
@@ -548,23 +553,30 @@ async function hashPin(pin) {
     .join('');
 }
 
+// ── SET KEYPAD DISABLED STATE ─────────────────────────────────────
+function setKeypadDisabled(disabled) {
+  document.querySelectorAll('.keypad .key').forEach(function (k) {
+    k.disabled = disabled;
+  });
+}
+
 // ── PIN INPUT ─────────────────────────────────────────────────────
 function pinInput(digit) {
-  if (isLockedOut() || pinValue.length >= 4) return;
+  if (isLockedOut() || isVerifying || pinValue.length >= 4) return;
   pinValue += digit;
   updateDots();
   if (pinValue.length === 4) setTimeout(checkPin, 100);
 }
 
 function pinDelete() {
-  if (isLockedOut()) return;
+  if (isLockedOut() || isVerifying) return;
   pinValue = pinValue.slice(0, -1);
   updateDots();
   clearPinFeedback();
 }
 
 function pinClear() {
-  if (isLockedOut()) return;
+  if (isLockedOut() || isVerifying) return;
   pinValue = '';
   updateDots();
   clearPinFeedback();
@@ -581,49 +593,86 @@ function updateDots(state) {
     var d = document.getElementById('dot-' + i);
     d.className = 'pin-dot';
     if (state === 'error')        d.classList.add('error');
+    else if (state === 'loading') d.classList.add('loading');
     else if (i < pinValue.length) d.classList.add('filled');
   }
 }
 
+// ── CHECK PIN — server-side verification ──────────────────────────
 async function checkPin() {
+  if (isVerifying) return;
+  isVerifying = true;
+  setKeypadDisabled(true);
+
+  var fb = document.getElementById('pin-feedback');
+  fb.textContent = 'Verifying...';
+  fb.className   = 'pin-feedback loading';
+  updateDots('loading');
+
   var hash = await hashPin(pinValue);
 
-  if (hash === CONFIG.pin_hash) {
-    clearLockout();
-    isAuthenticated = true;
-    document.getElementById('attempt-notice').textContent = '';
-    clearPinFeedback();
-    showScreen('screen-status');
-    loadCurrentStatus();
-    startSessionTimer();
-  } else {
-    var attempts  = getAttempts() + 1;
-    var remaining = SECURITY.max_attempts - attempts;
-    setAttempts(attempts);
-    updateDots('error');
+  try {
+    var resp = await fetch(CONFIG.worker_url + '/verify', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ pinHash: hash })
+    });
 
-    if (attempts >= SECURITY.max_attempts) {
-      triggerLockout();
-      setTimeout(function () {
-        pinValue = '';
-        updateDots();
-        clearPinFeedback();
-        document.getElementById('attempt-notice').textContent = '';
-        checkAndShowLockout();
-      }, 900);
+    if (!resp.ok) throw new Error('Verify request failed');
+    var result = await resp.json();
+
+    if (result.valid === true) {
+      clearLockout();
+      isAuthenticated = true;
+      document.getElementById('attempt-notice').textContent = '';
+      clearPinFeedback();
+      isVerifying = false;
+      setKeypadDisabled(false);
+      showScreen('screen-status');
+      loadCurrentStatus();
+      startSessionTimer();
     } else {
-      var fb = document.getElementById('pin-feedback');
-      fb.textContent = 'Incorrect PIN - try again.';
-      fb.className   = 'pin-feedback error';
-      document.getElementById('attempt-notice').textContent = remaining === 1
-        ? 'Warning: 1 attempt remaining before lockout'
-        : remaining + ' attempts remaining';
-      setTimeout(function () {
-        pinValue = '';
-        updateDots();
-        clearPinFeedback();
-      }, 1500);
+      // Incorrect PIN
+      var attempts  = getAttempts() + 1;
+      var remaining = SECURITY.max_attempts - attempts;
+      setAttempts(attempts);
+      updateDots('error');
+
+      if (attempts >= SECURITY.max_attempts) {
+        triggerLockout();
+        setTimeout(function () {
+          pinValue = '';
+          updateDots();
+          clearPinFeedback();
+          document.getElementById('attempt-notice').textContent = '';
+          isVerifying = false;
+          setKeypadDisabled(false);
+          checkAndShowLockout();
+        }, 900);
+      } else {
+        fb.textContent = 'Incorrect PIN - try again.';
+        fb.className   = 'pin-feedback error';
+        document.getElementById('attempt-notice').textContent = remaining === 1
+          ? 'Warning: 1 attempt remaining before lockout'
+          : remaining + ' attempts remaining';
+        setTimeout(function () {
+          pinValue = '';
+          updateDots();
+          clearPinFeedback();
+          isVerifying = false;
+          setKeypadDisabled(false);
+        }, 1500);
+      }
     }
+
+  } catch (err) {
+    // Network or worker error — fail safely
+    pinValue = '';
+    updateDots();
+    fb.textContent = 'Could not verify PIN. Check your connection and try again.';
+    fb.className   = 'pin-feedback error';
+    isVerifying = false;
+    setKeypadDisabled(false);
   }
 }
 
@@ -646,7 +695,9 @@ function sessionExpired() {
   selectedStatus     = null;
   pendingSeasonValue = null;
   pinValue           = '';
+  isVerifying        = false;
   clearInterval(sessionTimer);
+  setKeypadDisabled(false);
   updateDots();
   clearPinFeedback();
   document.getElementById('attempt-notice').textContent = '';
