@@ -1,5 +1,5 @@
 {
-  "isOpen": false,
-  "reason": "Unexpected equipment breakdown",
+  "isOpen": true,
+  "reason": "",
   "seasonOpen": true
 }
